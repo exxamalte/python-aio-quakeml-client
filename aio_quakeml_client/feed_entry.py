@@ -4,20 +4,17 @@ from __future__ import annotations
 import logging
 import re
 from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import List, Tuple, Type
+from typing import Tuple
+
+from haversine import haversine
 
 from .consts import CUSTOM_ATTRIBUTE
-from .origin_distance_helper import OriginDistanceHelper
+from .xml_parser.creation_info import CreationInfo
 from .xml_parser.event import Event
-from .xml_parser.geometry import Geometry, Point
+from .xml_parser.magnitude import Magnitude
+from .xml_parser.origin import Origin
 
 _LOGGER = logging.getLogger(__name__)
-
-DEFAULT_FEATURES = [
-    Point,
-    # Polygon, BoundingBox
-]
 
 
 class FeedEntry(ABC):
@@ -33,33 +30,12 @@ class FeedEntry(ABC):
         return "<{}(id={})>".format(self.__class__.__name__, self.external_id)
 
     @property
-    def features(self) -> List[Type[Geometry]]:
-        """Return the list of geometry types that this feed entry supports."""
-        return DEFAULT_FEATURES
-
-    @property
-    def geometries(self) -> List[Geometry] | None:
-        """Return all geometries of this entry."""
-        _LOGGER.debug(f"Origin: {self._quakeml_event.origin}")
-        if self._quakeml_event and self._quakeml_event.origin:
-            return [Point(self._quakeml_event.origin.latitude, self._quakeml_event.origin.longitude)]
-            # # Return all geometries that are of type defined in features.
-            # return list(
-            #     filter(lambda x: type(x) in self.features, self._quakeml_event.origin)
-            # )
-        return None
-
-    @property
     def coordinates(self) -> Tuple[float, float] | None:
         """Return the best coordinates (latitude, longitude) of this entry."""
         # This looks for the first point in the list of geometries. If there
         # is no point then return the first entry.
-        if self.geometries and len(self.geometries) >= 1:
-            for entry in self.geometries:
-                if isinstance(entry, Point):
-                    return OriginDistanceHelper.extract_coordinates(entry)
-            # No point found.
-            return OriginDistanceHelper.extract_coordinates(self.geometries[0])
+        if self.origin:
+            return self.origin.latitude, self.origin.longitude
         return None
 
     @property
@@ -81,33 +57,6 @@ class FeedEntry(ABC):
                 return match.group(CUSTOM_ATTRIBUTE)
         return None
 
-    # @property
-    # def title(self) -> Optional[str]:
-    #     """Return the title of this entry."""
-    #     if self._quakeml_event:
-    #         return self._quakeml_event.title
-    #     return None
-    #
-    # def _search_in_title(self, regexp):
-    #     """Find a sub-string in the entry's title."""
-    #     if self.title:
-    #         match = re.search(regexp, self.title)
-    #         if match:
-    #             return match.group(CUSTOM_ATTRIBUTE)
-    #     return None
-
-    # @property
-    # def category(self) -> Optional[str]:
-    #     """Return the category of this entry."""
-    #     if (
-    #         self._quakeml_event
-    #         and self._quakeml_event.category
-    #         and isinstance(self._quakeml_event.category, list)
-    #     ):
-    #         # To keep this simple, just return the first category.
-    #         return self._quakeml_event.category[0]
-    #     return None
-
     @property
     @abstractmethod
     def attribution(self) -> str | None:
@@ -117,17 +66,10 @@ class FeedEntry(ABC):
     @property
     def distance_to_home(self) -> float:
         """Return the distance in km of this entry to the home coordinates."""
-        # This goes through all geometries and reports back the closest
-        # distance to any of them.
         distance = float("inf")
-        if self.geometries and len(self.geometries) >= 1:
-            for geometry in self.geometries:
-                distance = min(
-                    distance,
-                    OriginDistanceHelper.distance_to_geometry(
-                        self._home_coordinates, geometry
-                    ),
-                )
+        if self.coordinates:
+            # Expecting coordinates in format: (latitude, longitude).
+            return haversine(self.coordinates, self._home_coordinates)
         return distance
 
     @property
@@ -141,28 +83,22 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def published(self) -> datetime | None:
-        """Return the published date of this entry."""
+    def creation_info(self) -> CreationInfo | None:
+        """Return creation info."""
         if self._quakeml_event:
-            return self._quakeml_event.published_date
+            return self._quakeml_event.creation_info
         return None
 
     @property
-    def updated(self) -> datetime | None:
-        """Return the updated date of this entry."""
+    def magnitude(self) -> Magnitude | None:
+        """Return magnitude."""
         if self._quakeml_event:
-            return self._quakeml_event.updated_date
+            return self._quakeml_event.magnitude
         return None
 
-    def _search_in_description(self, regexp):
-        """Find a sub-string in the entry's description."""
-        if self.description:
-            match = re.search(regexp, self.description)
-            if match:
-                return match.group(CUSTOM_ATTRIBUTE)
+    @property
+    def origin(self) -> Origin | None:
+        """Return origin."""
+        if self._quakeml_event:
+            return self._quakeml_event.origin
         return None
-
-    @staticmethod
-    def _string2boolean(value: str) -> bool:
-        """Convert value to boolean."""
-        return isinstance(value, str) and value.strip().lower() in {"true", "yes", "1"}

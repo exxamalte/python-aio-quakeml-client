@@ -1,8 +1,10 @@
 """Origin."""
 from __future__ import annotations
 
+from datetime import datetime
+
 from ..consts import XML_TAG_LATITUDE, XML_TAG_VALUE, XML_TAG_LONGITUDE, XML_TAG_DEPTH, \
-    XML_TAG_DEPTHTYPE
+    XML_TAG_DEPTHTYPE, XML_TAG_TIME, XML_TAG_EVALUATIONMODE, XML_TAG_EVALUATIONSTATUS
 from .element import Element
 
 
@@ -40,3 +42,21 @@ class Origin(Element):
         if depth:
             return depth.get(XML_TAG_DEPTHTYPE).capitalize()
         return None
+
+    @property
+    def time(self) -> datetime | None:
+        """Return focal time."""
+        time = self._attribute([XML_TAG_TIME])
+        if time:
+            return time.get(XML_TAG_VALUE)
+        return None
+
+    @property
+    def evaluation_mode(self) -> str | None:
+        """Return mode of evaluation ."""
+        return self._attribute_with_text([XML_TAG_EVALUATIONMODE])
+
+    @property
+    def evaluation_status(self) -> str | None:
+        """Return status of evaluation ."""
+        return self._attribute_with_text([XML_TAG_EVALUATIONSTATUS])

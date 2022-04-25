@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Dict
 
-from ..consts import XML_ATTR_PUBLICID, XML_CDATA
+from ..consts import XML_ATTR_PUBLICID, XML_CDATA, XML_TAG_TYPE
 
 
 class Element:
@@ -47,5 +47,10 @@ class Element:
 
     @property
     def public_id(self) -> str | None:
-        """Return the public id of this feed."""
+        """Return the public id of this element."""
         return self._attribute([XML_ATTR_PUBLICID])
+
+    @property
+    def type(self) -> str | None:
+        """Return element's type."""
+        return self._attribute_with_text([XML_TAG_TYPE])

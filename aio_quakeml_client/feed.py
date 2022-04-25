@@ -12,7 +12,7 @@ import aiohttp
 from aiohttp import ClientSession, client_exceptions
 
 from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_OK, UPDATE_OK_NO_DATA, \
-    UPDATE_ERROR, ATTR_ATTRIBUTION
+    UPDATE_ERROR
 from .feed_entry import FeedEntry
 from .xml_parser import XmlParser, EventParameters
 from .xml_parser.event import Event
@@ -142,11 +142,10 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
-        # Always remove entries without geometry
+        # Always remove entries without geometry.
         filtered_entries = list(
             filter(
-                lambda entry: entry.geometries is not None
-                and len(entry.geometries) >= 1,
+                lambda entry: entry.coordinates is not None,
                 filtered_entries,
             )
         )

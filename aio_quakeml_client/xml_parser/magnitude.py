@@ -1,0 +1,22 @@
+"""Magnitude."""
+from __future__ import annotations
+
+from ..consts import XML_TAG_VALUE, XML_TAG_MAG, XML_TAG_STATIONCOUNT
+from .element import Element
+
+
+class Magnitude(Element):
+    """Event magnitude."""
+
+    @property
+    def mag(self) -> float | None:
+        """Return magnitude value."""
+        time = self._attribute([XML_TAG_MAG])
+        if time:
+            return time.get(XML_TAG_VALUE)
+        return None
+
+    @property
+    def station_count(self) -> int | None:
+        """Return number of used stations for this magnitude computation."""
+        return self._attribute_with_text([XML_TAG_STATIONCOUNT])

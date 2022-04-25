@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import logging
+from typing import List
 
-from ..consts import XML_TAG_TYPE, XML_TAG_ORIGIN, XML_TAG_DESCRIPTION
+from .creation_info import CreationInfo
+from .magnitude import Magnitude
+from ..consts import XML_TAG_TYPE, XML_TAG_ORIGIN, XML_TAG_DESCRIPTION, \
+    XML_TAG_MAGNITUDE, XML_TAG_CREATIONINFO
 from .description import Description
 from .element import Element
 from .origin import Origin
@@ -27,8 +31,45 @@ class Event(Element):
 
     @property
     def origin(self) -> Origin | None:
-        origin = self._attribute([XML_TAG_ORIGIN])
-        if origin:
-            # TODO: Could be more than 1 origin.
-            return Origin(origin)
+        """First defined origin."""
+        if self.origins:
+            return self.origins[0]
+        return None
+
+    @property
+    def origins(self) -> List[Origin] | None:
+        """Origins defined for this event."""
+        origins = self._attribute([XML_TAG_ORIGIN])
+        entries = []
+        if origins and isinstance(origins, list):
+            for origin in origins:
+                entries.append(Origin(origin))
+        else:
+            entries.append(Origin(origins))
+        return entries
+
+    @property
+    def magnitude(self) -> Magnitude | None:
+        """First defined magnitude."""
+        if self.magnitudes:
+            return self.magnitudes[0]
+        return None
+
+    @property
+    def magnitudes(self) -> List[Magnitude] | None:
+        """Magnitudes defined for this event."""
+        magnitudes = self._attribute([XML_TAG_MAGNITUDE])
+        entries = []
+        if magnitudes and isinstance(magnitudes, list):
+            for magnitude in magnitudes:
+                entries.append(Magnitude(magnitude))
+        else:
+            entries.append(Magnitude(magnitudes))
+        return entries
+
+    @property
+    def creation_info(self) -> CreationInfo | None:
+        creation_info = self._attribute([XML_TAG_CREATIONINFO])
+        if creation_info:
+            return CreationInfo(creation_info)
         return None
