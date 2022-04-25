@@ -21,9 +21,9 @@ class FeedManagerBase:
     def __init__(
         self,
         feed: QuakeMLFeed,
-        generate_async_callback: Callable[[str], Awaitable[None]],
-        update_async_callback: Callable[[str], Awaitable[None]],
-        remove_async_callback: Callable[[str], Awaitable[None]],
+        generate_async_callback: Callable[[str], Awaitable[None]] = None,
+        update_async_callback: Callable[[str], Awaitable[None]] = None,
+        remove_async_callback: Callable[[str], Awaitable[None]] = None,
         status_async_callback: Callable[[StatusUpdate], Awaitable[None]] = None,
     ):
         """Initialise feed manager."""
