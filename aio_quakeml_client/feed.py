@@ -11,10 +11,9 @@ from typing import Dict, Generic, List, Optional, Tuple, TypeVar
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
 
-from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_OK, UPDATE_OK_NO_DATA, \
-    UPDATE_ERROR
+from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed_entry import FeedEntry
-from .xml_parser import XmlParser, EventParameters
+from .xml_parser import EventParameters, XmlParser
 from .xml_parser.event import Event
 
 _LOGGER = logging.getLogger(__name__)
@@ -138,7 +137,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries: List[T_FEED_ENTRY])  -> List[T_FEED_ENTRY]:
+    def _filter_entries(self, entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)

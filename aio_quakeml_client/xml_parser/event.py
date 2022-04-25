@@ -4,19 +4,23 @@ from __future__ import annotations
 import logging
 from typing import List
 
+from ..consts import (
+    XML_TAG_CREATIONINFO,
+    XML_TAG_DESCRIPTION,
+    XML_TAG_MAGNITUDE,
+    XML_TAG_ORIGIN,
+    XML_TAG_TYPE,
+)
 from .creation_info import CreationInfo
-from .magnitude import Magnitude
-from ..consts import XML_TAG_TYPE, XML_TAG_ORIGIN, XML_TAG_DESCRIPTION, \
-    XML_TAG_MAGNITUDE, XML_TAG_CREATIONINFO
 from .description import Description
 from .element import Element
+from .magnitude import Magnitude
 from .origin import Origin
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class Event(Element):
-
     @property
     def type(self) -> str | None:
         return self._attribute_with_text([XML_TAG_TYPE])

@@ -1,13 +1,12 @@
 """Base class for any QuakeML elements."""
 from __future__ import annotations
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 from ..consts import XML_ATTR_PUBLICID, XML_CDATA, XML_TAG_TYPE
 
 
 class Element:
-
     def __init__(self, source: Dict):
         """Initialise feed."""
         self._source = source
@@ -39,11 +38,7 @@ class Element:
         """Return the attribute found under the chain of keys."""
         key = keys.pop(0)
         if key in obj:
-            return (
-                Element._attribute_in_structure(obj[key], keys)
-                if keys
-                else obj[key]
-            )
+            return Element._attribute_in_structure(obj[key], keys) if keys else obj[key]
 
     @property
     def public_id(self) -> str | None:

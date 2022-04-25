@@ -1,7 +1,7 @@
 """Magnitude."""
 from __future__ import annotations
 
-from ..consts import XML_TAG_VALUE, XML_TAG_MAG, XML_TAG_STATIONCOUNT
+from ..consts import XML_TAG_MAG, XML_TAG_STATIONCOUNT, XML_TAG_VALUE
 from .element import Element
 
 

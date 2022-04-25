@@ -7,6 +7,7 @@ import pytest
 from aiohttp import ClientOSError
 
 from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK
+
 # from aio_geojson_client.filter_definition import GeoJsonFeedFilterDefinition
 # from aio_geojson_client.geometries.point import Point
 # from aio_geojson_client.geometries.polygon import Polygon
@@ -40,11 +41,17 @@ async def test_update_ok(aresponses, event_loop):
         feed_entry = entries[0]
         assert feed_entry is not None
         # assert feed_entry.title == "Title 1"
-        assert feed_entry.external_id == "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321"
+        assert (
+            feed_entry.external_id
+            == "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321"
+        )
         assert feed_entry.coordinates == (42.5218, 13.3833)
         assert feed_entry.description == "Region name: 4 km S Campotosto (AQ)"
         assert round(abs(feed_entry.distance_to_home - 16074.6), 1) == 0
-        assert repr(feed_entry) == "<MockFeedEntry(id=smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321)>"
+        assert (
+            repr(feed_entry)
+            == "<MockFeedEntry(id=smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321)>"
+        )
 
         # feed_entry = entries[1]
         # assert feed_entry is not None

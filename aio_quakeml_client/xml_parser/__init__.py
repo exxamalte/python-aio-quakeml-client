@@ -8,12 +8,21 @@ import dateparser as dateparser
 import xmltodict
 
 from aio_quakeml_client.consts import (
+    XML_TAG_CREATIONINFO,
+    XML_TAG_CREATIONTIME,
+    XML_TAG_DEPTH,
+    XML_TAG_EVENT,
+    XML_TAG_EVENTPARAMETERS,
+    XML_TAG_LATITUDE,
+    XML_TAG_LONGITUDE,
+    XML_TAG_MAG,
+    XML_TAG_MAGNITUDE,
+    XML_TAG_ORIGIN,
     XML_TAG_Q_QUAKEML,
-    XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_ORIGIN, XML_TAG_LATITUDE,
-    XML_TAG_VALUE, XML_TAG_LONGITUDE, XML_TAG_DEPTH, XML_TAG_TIME, XML_TAG_MAG,
-    XML_TAG_MAGNITUDE, XML_TAG_STATIONCOUNT, XML_TAG_CREATIONINFO, XML_TAG_CREATIONTIME,
+    XML_TAG_STATIONCOUNT,
+    XML_TAG_TIME,
+    XML_TAG_VALUE,
 )
-
 from aio_quakeml_client.xml_parser.event_parameters import EventParameters
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,28 +32,71 @@ DEFAULT_NAMESPACES = {
     "http://quakeml.org/xmlns/quakeml/1.2": "q",
 }
 KEYS_CHAINS_DATE = [
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_ORIGIN,
-     XML_TAG_TIME, XML_TAG_VALUE],
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_CREATIONINFO,
-     XML_TAG_CREATIONTIME],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_ORIGIN,
+        XML_TAG_TIME,
+        XML_TAG_VALUE,
+    ],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_CREATIONINFO,
+        XML_TAG_CREATIONTIME,
+    ],
 ]
 KEYS_CHAINS_INT = [
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_ORIGIN,
-     XML_TAG_DEPTH, XML_TAG_VALUE],
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_MAGNITUDE,
-     XML_TAG_STATIONCOUNT],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_ORIGIN,
+        XML_TAG_DEPTH,
+        XML_TAG_VALUE,
+    ],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_MAGNITUDE,
+        XML_TAG_STATIONCOUNT,
+    ],
 ]
 KEY_CHAINS_FLOAT = [
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_ORIGIN, XML_TAG_LATITUDE, XML_TAG_VALUE],
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_ORIGIN, XML_TAG_LONGITUDE, XML_TAG_VALUE],
-    [XML_TAG_Q_QUAKEML, XML_TAG_EVENTPARAMETERS, XML_TAG_EVENT, XML_TAG_MAGNITUDE, XML_TAG_MAG, XML_TAG_VALUE],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_ORIGIN,
+        XML_TAG_LATITUDE,
+        XML_TAG_VALUE,
+    ],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_ORIGIN,
+        XML_TAG_LONGITUDE,
+        XML_TAG_VALUE,
+    ],
+    [
+        XML_TAG_Q_QUAKEML,
+        XML_TAG_EVENTPARAMETERS,
+        XML_TAG_EVENT,
+        XML_TAG_MAGNITUDE,
+        XML_TAG_MAG,
+        XML_TAG_VALUE,
+    ],
 ]
 
 
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces: Dict=None):
+    def __init__(self, additional_namespaces: Dict = None):
         """Initialise the XML parser."""
         self._namespaces = DEFAULT_NAMESPACES
         if additional_namespaces:
