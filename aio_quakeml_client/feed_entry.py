@@ -1,4 +1,6 @@
 """Feed Entry."""
+from __future__ import annotations
+
 import logging
 import re
 from abc import ABC, abstractmethod
@@ -36,8 +38,9 @@ class FeedEntry(ABC):
         return DEFAULT_FEATURES
 
     @property
-    def geometries(self) -> Optional[List[Geometry]]:
+    def geometries(self) -> List[Geometry] | None:
         """Return all geometries of this entry."""
+        _LOGGER.debug(f"Origin: {self._quakeml_event.origin}")
         if self._quakeml_event and self._quakeml_event.origin:
             return [Point(self._quakeml_event.origin.latitude, self._quakeml_event.origin.longitude)]
             # # Return all geometries that are of type defined in features.
@@ -47,7 +50,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def coordinates(self) -> Optional[Tuple[float, float]]:
+    def coordinates(self) -> Tuple[float, float] | None:
         """Return the best coordinates (latitude, longitude) of this entry."""
         # This looks for the first point in the list of geometries. If there
         # is no point then return the first entry.
@@ -60,19 +63,17 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def external_id(self) -> Optional[str]:
+    def external_id(self) -> str | None:
         """Return the external id of this entry."""
         if self._quakeml_event:
             external_id = self._quakeml_event.public_id
-            if not external_id:
-                external_id = self.title
             if not external_id:
                 # Use geometry as ID as a fallback.
                 external_id = hash(self.coordinates)
             return external_id
         return None
 
-    def _search_in_external_id(self, regexp) -> Optional[str]:
+    def _search_in_external_id(self, regexp) -> str | None:
         """Find a sub-string in the entry's external id."""
         if self.external_id:
             match = re.search(regexp, self.external_id)
@@ -80,20 +81,20 @@ class FeedEntry(ABC):
                 return match.group(CUSTOM_ATTRIBUTE)
         return None
 
-    @property
-    def title(self) -> Optional[str]:
-        """Return the title of this entry."""
-        if self._quakeml_event:
-            return self._quakeml_event.title
-        return None
-
-    def _search_in_title(self, regexp):
-        """Find a sub-string in the entry's title."""
-        if self.title:
-            match = re.search(regexp, self.title)
-            if match:
-                return match.group(CUSTOM_ATTRIBUTE)
-        return None
+    # @property
+    # def title(self) -> Optional[str]:
+    #     """Return the title of this entry."""
+    #     if self._quakeml_event:
+    #         return self._quakeml_event.title
+    #     return None
+    #
+    # def _search_in_title(self, regexp):
+    #     """Find a sub-string in the entry's title."""
+    #     if self.title:
+    #         match = re.search(regexp, self.title)
+    #         if match:
+    #             return match.group(CUSTOM_ATTRIBUTE)
+    #     return None
 
     # @property
     # def category(self) -> Optional[str]:
@@ -109,7 +110,7 @@ class FeedEntry(ABC):
 
     @property
     @abstractmethod
-    def attribution(self) -> Optional[str]:
+    def attribution(self) -> str | None:
         """Return the attribution of this entry."""
         return None
 
@@ -130,21 +131,24 @@ class FeedEntry(ABC):
         return distance
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """Return the description of this entry."""
         if self._quakeml_event and self._quakeml_event.description:
-            return self._quakeml_event.description
+            if self._quakeml_event.description.type:
+                return f"{self._quakeml_event.description.type.capitalize()}: {self._quakeml_event.description.text}"
+            else:
+                return self._quakeml_event.description.text
         return None
 
     @property
-    def published(self) -> Optional[datetime]:
+    def published(self) -> datetime | None:
         """Return the published date of this entry."""
         if self._quakeml_event:
             return self._quakeml_event.published_date
         return None
 
     @property
-    def updated(self) -> Optional[datetime]:
+    def updated(self) -> datetime | None:
         """Return the updated date of this entry."""
         if self._quakeml_event:
             return self._quakeml_event.updated_date

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ..consts import XML_TAG_PUBLICID, XML_CDATA
+from ..consts import XML_ATTR_PUBLICID, XML_CDATA
 
 
 class Element:
@@ -45,4 +45,4 @@ class Element:
     @property
     def public_id(self) -> str:
         """Return the public id of this feed."""
-        return self._attribute([XML_TAG_PUBLICID])
+        return self._attribute([XML_ATTR_PUBLICID])

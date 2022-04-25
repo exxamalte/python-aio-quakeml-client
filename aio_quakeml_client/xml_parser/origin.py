@@ -1,4 +1,6 @@
 """Origin."""
+from __future__ import annotations
+
 from ..consts import XML_TAG_LATITUDE, XML_TAG_VALUE, XML_TAG_LONGITUDE, XML_TAG_DEPTH
 from .element import Element
 

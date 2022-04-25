@@ -1,4 +1,6 @@
 """QuakeML Feed."""
+from __future__ import annotations
+
 import asyncio
 import codecs
 import logging
@@ -41,20 +43,18 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(home={}, url={}, radius={}, categories={})>".format(
+        return "<{}(home={}, url={}, radius={})>".format(
             self.__class__.__name__,
             self._home_coordinates,
             self._url,
             self._filter_radius,
-            "undefined"
-            # self._filter_categories,
         )
 
     @abstractmethod
     def _new_entry(
         self,
         home_coordinates: Tuple[float, float],
-        rss_entry: Event,
+        event: Event,
         global_data: Dict,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
@@ -70,15 +70,15 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
-        status, rss_data = await self._fetch()
+        status, quakeml_data = await self._fetch()
         if status == UPDATE_OK:
-            if rss_data:
+            if quakeml_data:
                 entries = []
-                global_data = self._extract_from_feed(rss_data)
+                global_data = self._extract_from_feed(quakeml_data)
                 # Extract data from feed entries.
-                for rss_entry in rss_data.events:
+                for event in quakeml_data.events:
                     entries.append(
-                        self._new_entry(self._home_coordinates, rss_entry, global_data)
+                        self._new_entry(self._home_coordinates, event, global_data)
                     )
                 filtered_entries = self._filter_entries(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
