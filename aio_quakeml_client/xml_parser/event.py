@@ -14,7 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 class Event(Element):
 
     @property
-    def type(self):
+    def type(self) -> str | None:
         return self._attribute_with_text([XML_TAG_TYPE])
 
     @property
@@ -26,11 +26,9 @@ class Event(Element):
         return None
 
     @property
-    def origin(self):
+    def origin(self) -> Origin | None:
         origin = self._attribute([XML_TAG_ORIGIN])
-        # _LOGGER.debug("Origin: %s", origin)
-        # _LOGGER.debug("Source: %s", self._source)
         if origin:
             # TODO: Could be more than 1 origin.
-            # _LOGGER.debug("Event ID: %s", self.public_id)
             return Origin(origin)
+        return None

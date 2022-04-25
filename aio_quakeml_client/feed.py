@@ -31,7 +31,6 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         home_coordinates: Tuple[float, float],
         url: str,
         filter_radius: float = None,
-        # filter_categories: List[str] = None,
     ):
         """Initialise this service."""
         self._websession = websession
@@ -64,7 +63,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    def _additional_namespaces(self):
+    def _additional_namespaces(self) -> Dict | None:
         """Provide additional namespaces, relevant for this feed."""
         pass
 
@@ -139,7 +138,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries: List[T_FEED_ENTRY]):
+    def _filter_entries(self, entries: List[T_FEED_ENTRY])  -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -183,7 +182,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _extract_last_timestamp(
         self, feed_entries: List[T_FEED_ENTRY]
-    ) -> Optional[datetime]:
+    ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
             dates = sorted(
@@ -197,6 +196,6 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         return None
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the last timestamp extracted from this feed."""
         return self._last_timestamp

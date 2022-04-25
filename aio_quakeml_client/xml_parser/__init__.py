@@ -74,7 +74,7 @@ KEY_CHAINS_FLOAT = [
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces=None):
+    def __init__(self, additional_namespaces: Dict=None):
         """Initialise the XML parser."""
         self._namespaces = DEFAULT_NAMESPACES
         if additional_namespaces:

@@ -6,11 +6,14 @@ from .element import Element
 
 
 class Description(Element):
+    """Event description."""
 
     @property
-    def type(self):
+    def type(self) -> str | None:
+        """Return description's type."""
         return self._attribute_with_text([XML_TAG_TYPE])
 
     @property
-    def text(self):
+    def text(self) -> str | None:
+        """Return description's text."""
         return self._attribute_with_text([XML_TAG_TEXT])

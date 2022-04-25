@@ -1,4 +1,6 @@
 """QuakeML Distance Helper."""
+from __future__ import annotations
+
 import logging
 from typing import Optional, Tuple
 
@@ -17,7 +19,7 @@ class OriginDistanceHelper:
         pass
 
     @staticmethod
-    def extract_coordinates(geometry: Geometry) -> Optional[Tuple[float, float]]:
+    def extract_coordinates(geometry: Geometry) -> Tuple[float, float] | None:
         """Extract the best coordinates from the feature for display."""
         latitude = longitude = None
         if isinstance(geometry, Point):
@@ -84,7 +86,7 @@ class OriginDistanceHelper:
     @staticmethod
     def _perpendicular_point(
         edge: Tuple[Point, Point], point: Point
-    ) -> Optional[Point]:
+    ) -> Point | None:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
         # Safety check: a and b can't be an edge if they are the same point.

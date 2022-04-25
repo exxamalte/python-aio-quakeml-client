@@ -1,11 +1,14 @@
-from typing import List, Optional
+"""Base class for any QuakeML elements."""
+from __future__ import annotations
+
+from typing import List, Optional, Dict
 
 from ..consts import XML_ATTR_PUBLICID, XML_CDATA
 
 
 class Element:
 
-    def __init__(self, source):
+    def __init__(self, source: Dict):
         """Initialise feed."""
         self._source = source
 
@@ -14,7 +17,7 @@ class Element:
         return "<{}({})>".format(self.__class__.__name__, self.public_id)
 
     def _attribute(self, names: List[str]) -> Optional:
-        """Get an attribute from this feed or feed item."""
+        """Get an attribute from this element."""
         if self._source and names:
             # Try each name, and return the first value that is not None.
             for name in names:
@@ -43,6 +46,6 @@ class Element:
             )
 
     @property
-    def public_id(self) -> str:
+    def public_id(self) -> str | None:
         """Return the public id of this feed."""
         return self._attribute([XML_ATTR_PUBLICID])

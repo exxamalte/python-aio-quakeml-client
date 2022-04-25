@@ -3,6 +3,8 @@ Base class for the feed manager.
 
 This allows managing feeds and their entries throughout their life-cycle.
 """
+from __future__ import annotations
+
 import logging
 from datetime import datetime
 from typing import Awaitable, Callable, List, Optional, Set
@@ -142,16 +144,16 @@ class FeedManagerBase:
             )
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the last timestamp extracted from this feed."""
         return self._feed.last_timestamp
 
     @property
-    def last_update(self) -> Optional[datetime]:
+    def last_update(self) -> datetime | None:
         """Return the last update of this feed."""
         return self._last_update
 
     @property
-    def last_update_successful(self) -> Optional[datetime]:
+    def last_update_successful(self) -> datetime | None:
         """Return the last successful update of this feed."""
         return self._last_update_successful

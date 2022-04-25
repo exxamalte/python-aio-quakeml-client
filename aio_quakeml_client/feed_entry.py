@@ -5,7 +5,7 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, Optional, Tuple, Type
+from typing import List, Tuple, Type
 
 from .consts import CUSTOM_ATTRIBUTE
 from .origin_distance_helper import OriginDistanceHelper
