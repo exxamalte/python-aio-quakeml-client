@@ -1,16 +1,10 @@
 """Test for the generic QuakeML feed."""
-import asyncio
-from unittest.mock import MagicMock
+import datetime
 
 import aiohttp
 import pytest
-from aiohttp import ClientOSError
 
-from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK
-
-# from aio_geojson_client.filter_definition import GeoJsonFeedFilterDefinition
-# from aio_geojson_client.geometries.point import Point
-# from aio_geojson_client.geometries.polygon import Polygon
+from aio_quakeml_client.consts import UPDATE_OK
 from tests import MockQuakeMLFeed
 from tests.utils import load_fixture
 
@@ -46,6 +40,12 @@ async def test_update_ok(aresponses, event_loop):
             == "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321"
         )
         assert feed_entry.coordinates == (42.5218, 13.3833)
+        assert feed_entry.origin.depth == 14500
+        assert feed_entry.origin.time == datetime.datetime(
+            2022, 3, 1, 22, 53, 55, 680000, tzinfo=datetime.timezone.utc
+        )
+        assert feed_entry.origin.evaluation_status == "reviewed"
+        assert feed_entry.origin.evaluation_mode == "manual"
         assert feed_entry.description == "Region name: 4 km S Campotosto (AQ)"
         assert round(abs(feed_entry.distance_to_home - 16074.6), 1) == 0
         assert (

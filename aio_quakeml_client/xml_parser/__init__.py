@@ -111,7 +111,10 @@ class XmlParser:
             if XmlParser._is_path_in(path, KEYS_CHAINS_INT):
                 return key, int(value)
             if XmlParser._is_path_in(path, KEYS_CHAINS_DATE):
-                return key, dateparser.parse(value)
+                return key, dateparser.parse(
+                    value,
+                    settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True},
+                )
         except (ValueError, TypeError) as error:
             _LOGGER.warning("Unable to process (%s/%s): %s", key, value, error)
         return key, value
