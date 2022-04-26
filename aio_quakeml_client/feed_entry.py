@@ -73,6 +73,13 @@ class FeedEntry(ABC):
         return distance
 
     @property
+    def type(self) -> str | None:
+        """Return entry's type."""
+        if self._quakeml_event and self._quakeml_event.type:
+            return self._quakeml_event.type.capitalize()
+        return None
+
+    @property
     def description(self) -> str | None:
         """Return the description of this entry."""
         if self._quakeml_event and self._quakeml_event.description:

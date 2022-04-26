@@ -34,23 +34,47 @@ async def test_update_ok(aresponses, event_loop):
 
         feed_entry = entries[0]
         assert feed_entry is not None
-        # assert feed_entry.title == "Title 1"
         assert (
             feed_entry.external_id
             == "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321"
         )
+
+        assert feed_entry.description == "Region name: 4 km S Campotosto (AQ)"
+        assert feed_entry.type == "Earthquake"
+
+        assert (
+            feed_entry.origin.public_id
+            == "smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595191"
+        )
         assert feed_entry.coordinates == (42.5218, 13.3833)
+        assert feed_entry.origin.latitude == 42.5218
+        assert feed_entry.origin.longitude == 13.3833
+        assert feed_entry.origin.type == "hypocenter"
         assert feed_entry.origin.depth == 14500
+        assert feed_entry.origin.depth_type == "From location"
         assert feed_entry.origin.time == datetime.datetime(
             2022, 3, 1, 22, 53, 55, 680000, tzinfo=datetime.timezone.utc
         )
         assert feed_entry.origin.evaluation_status == "reviewed"
         assert feed_entry.origin.evaluation_mode == "manual"
-        assert feed_entry.description == "Region name: 4 km S Campotosto (AQ)"
+
         assert round(abs(feed_entry.distance_to_home - 16074.6), 1) == 0
         assert (
             repr(feed_entry)
             == "<MockFeedEntry(id=smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321)>"
+        )
+        assert (
+            feed_entry.magnitude.public_id
+            == "smi:webservices.ingv.it/fdsnws/event/1/query?magnitudeId=108867501"
+        )
+        assert feed_entry.magnitude.type == "ML"
+        assert feed_entry.magnitude.mag == 2.6
+        assert feed_entry.magnitude.station_count == 72
+
+        assert feed_entry.creation_info.agency_id == "INGV"
+        assert feed_entry.creation_info.author == "hew10_mole#MOD_EQASSEMBLE"
+        assert feed_entry.creation_info.creation_time == datetime.datetime(
+            2022, 3, 1, 22, 54, 13, tzinfo=datetime.timezone.utc
         )
 
         # feed_entry = entries[1]

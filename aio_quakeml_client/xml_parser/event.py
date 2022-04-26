@@ -9,7 +9,6 @@ from ..consts import (
     XML_TAG_DESCRIPTION,
     XML_TAG_MAGNITUDE,
     XML_TAG_ORIGIN,
-    XML_TAG_TYPE,
 )
 from .creation_info import CreationInfo
 from .description import Description
@@ -21,10 +20,6 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Event(Element):
-    @property
-    def type(self) -> str | None:
-        return self._attribute_with_text([XML_TAG_TYPE])
-
     @property
     def description(self) -> Description | None:
         """Event description."""
