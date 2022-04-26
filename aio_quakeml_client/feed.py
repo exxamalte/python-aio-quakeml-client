@@ -30,22 +30,24 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         home_coordinates: Tuple[float, float],
         url: str,
         filter_radius: float = None,
+        filter_minimum_magnitude: float = None,
     ):
         """Initialise this service."""
         self._websession = websession
         self._home_coordinates = home_coordinates
-        self._filter_radius = filter_radius
-        # self._filter_categories = filter_categories
         self._url = url
+        self._filter_radius = filter_radius
+        self._filter_minimum_magnitude = filter_minimum_magnitude
         self._last_timestamp = None
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(home={}, url={}, radius={})>".format(
+        return "<{}(home={}, url={}, radius={}, magnitude={})>".format(
             self.__class__.__name__,
             self._home_coordinates,
             self._url,
             self._filter_radius,
+            self._filter_minimum_magnitude,
         )
 
     @abstractmethod
@@ -157,16 +159,17 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                 )
             )
         # # Filter by category.
-        # if self._filter_categories:
-        #     filtered_entries = list(
-        #         filter(
-        #             lambda entry: len(
-        #                 {entry.category}.intersection(self._filter_categories)
-        #             )
-        #             > 0,
-        #             filtered_entries,
-        #         )
-        #     )
+        if self._filter_minimum_magnitude:
+            # Return only entries that have an actual magnitude value, and
+            # the value is equal or above the defined threshold.
+            filtered_entries = list(
+                filter(
+                    lambda entry: entry.magnitude
+                    and entry.magnitude.mag
+                    and entry.magnitude.mag >= self._filter_minimum_magnitude,
+                    filtered_entries,
+                )
+            )
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
