@@ -31,10 +31,8 @@ class FeedEntry(ABC):
 
     @property
     def coordinates(self) -> Tuple[float, float] | None:
-        """Return the best coordinates (latitude, longitude) of this entry."""
-        # This looks for the first point in the list of geometries. If there
-        # is no point then return the first entry.
-        if self.origin:
+        """Return the coordinates (latitude, longitude) of this entry."""
+        if self.origin and self.origin.latitude and self.origin.longitude:
             return self.origin.latitude, self.origin.longitude
         return None
 

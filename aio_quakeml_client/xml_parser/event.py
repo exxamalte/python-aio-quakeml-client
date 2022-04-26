@@ -20,6 +20,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Event(Element):
+    """Event."""
+
     @property
     def description(self) -> Description | None:
         """Event description."""
@@ -40,11 +42,12 @@ class Event(Element):
         """Origins defined for this event."""
         origins = self._attribute([XML_TAG_ORIGIN])
         entries = []
-        if origins and isinstance(origins, list):
-            for origin in origins:
-                entries.append(Origin(origin))
-        else:
-            entries.append(Origin(origins))
+        if origins:
+            if isinstance(origins, list):
+                for origin in origins:
+                    entries.append(Origin(origin))
+            else:
+                entries.append(Origin(origins))
         return entries
 
     @property
@@ -59,11 +62,12 @@ class Event(Element):
         """Magnitudes defined for this event."""
         magnitudes = self._attribute([XML_TAG_MAGNITUDE])
         entries = []
-        if magnitudes and isinstance(magnitudes, list):
-            for magnitude in magnitudes:
-                entries.append(Magnitude(magnitude))
-        else:
-            entries.append(Magnitude(magnitudes))
+        if magnitudes:
+            if isinstance(magnitudes, list):
+                for magnitude in magnitudes:
+                    entries.append(Magnitude(magnitude))
+            else:
+                entries.append(Magnitude(magnitudes))
         return entries
 
     @property

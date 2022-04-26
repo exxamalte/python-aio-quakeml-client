@@ -17,7 +17,7 @@ from .status_update import StatusUpdate
 _LOGGER = logging.getLogger(__name__)
 
 
-class FeedManagerBase:
+class QuakeMLFeedManagerBase:
     """Generic Feed manager."""
 
     def __init__(

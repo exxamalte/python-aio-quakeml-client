@@ -2,7 +2,9 @@
 from datetime import datetime
 from typing import Dict, Optional, Tuple
 
-from aio_quakeml_client import T_FEED_ENTRY, Event, FeedEntry, QuakeMLFeed
+from aio_quakeml_client.feed import QuakeMLFeed
+from aio_quakeml_client.feed_entry import FeedEntry
+from aio_quakeml_client.xml_parser.event import Event
 
 
 class MockFeedEntry(FeedEntry):

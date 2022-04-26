@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="yes"?>
+<q:quakeml xmlns:q="http://quakeml.org/xmlns/quakeml/1.2" xmlns="http://quakeml.org/xmlns/bed/1.2" xmlns:ingv="http://webservices.ingv.it/fdsnws/event/1">
+  <eventParameters publicID="smi:webservices.ingv.it/fdsnws/event/1/query">
+    <event>
+      <origin publicID="smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595192">
+        <latitude>
+          <value>42.5218</value>
+        </latitude>
+        <longitude>
+          <value>13.3833</value>
+        </longitude>
+      </origin>
+    </event>
+    <event>
+      <origin publicID="smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595193">
+        <latitude>
+          <value>42.5219</value>
+        </latitude>
+        <longitude>
+          <value>13.3834</value>
+        </longitude>
+      </origin>
+      <magnitude publicID="smi:webservices.ingv.it/fdsnws/event/1/query?magnitudeId=108867502">
+        <mag>
+          <value>2.7</value>
+        </mag>
+      </magnitude>
+    </event>
+  </eventParameters>
+</q:quakeml>

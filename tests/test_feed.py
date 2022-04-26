@@ -77,51 +77,78 @@ async def test_update_ok(aresponses, event_loop):
             2022, 3, 1, 22, 54, 13, tzinfo=datetime.timezone.utc
         )
 
-        # feed_entry = entries[1]
-        # assert feed_entry is not None
-        # assert feed_entry.title == "Title 2"
-        # assert feed_entry.external_id == "4567"
-        #
-        # feed_entry = entries[2]
-        # assert feed_entry is not None
-        # assert feed_entry.title == "Title 3"
-        # assert feed_entry.external_id == "Title 3"
-        #
-        # feed_entry = entries[3]
-        # assert feed_entry is not None
-        # assert feed_entry.title is None
-        # assert feed_entry.external_id == hash(feed_entry.coordinates)
-        #
-        # feed_entry = entries[4]
-        # assert feed_entry is not None
-        # assert feed_entry.title == "Title 5"
-        # assert feed_entry.external_id == "7890"
+
+@pytest.mark.asyncio
+async def test_update_edge_cases(aresponses, event_loop):
+    """Test updating feed is ok."""
+    home_coordinates = (-31.0, 151.0)
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_2.xml"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 2
+
+        feed_entry = entries[0]
+        assert feed_entry is not None
+        assert feed_entry.origin is not None
+        assert (
+            feed_entry.origin.public_id
+            == "smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595192"
+        )
+        assert feed_entry.coordinates == (42.5218, 13.3833)
+        assert feed_entry.magnitude is None
+        assert feed_entry.creation_info is None
+        assert feed_entry.description is None
+
+        feed_entry = entries[1]
+        assert feed_entry is not None
+        assert feed_entry.magnitude is not None
+        assert feed_entry.magnitude.mag == 2.7
 
 
-# @pytest.mark.asyncio
-# async def test_update_ok_with_filtering(aresponses, event_loop):
-#     """Test updating feed is ok."""
-#     home_coordinates = (-37.0, 150.0)
-#     aresponses.add(
-#         "test.url",
-#         "/testpath",
-#         "get",
-#         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
-#     )
-#
-#     async with aiohttp.ClientSession(loop=event_loop) as websession:
-#         feed = MockGeoJsonFeed(
-#             websession, home_coordinates, "http://test.url/testpath", filter_radius=90.0
-#         )
-#         status, entries = await feed.update()
-#         assert status == UPDATE_OK
-#         assert entries is not None
-#         assert len(entries) == 4
-#         assert round(abs(entries[0].distance_to_home - 82.0), 1) == 0
-#         assert round(abs(entries[1].distance_to_home - 77.0), 1) == 0
-#         assert round(abs(entries[2].distance_to_home - 84.6), 1) == 0
-#
-#
+@pytest.mark.asyncio
+async def test_update_ok_with_radius_filter(aresponses, event_loop):
+    """Test updating feed is ok."""
+    home_coordinates = (42.0, 13.0)
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_3.xml"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockQuakeMLFeed(
+            websession,
+            home_coordinates,
+            "http://test.url/testpath",
+            filter_radius=250.0,
+        )
+        assert (
+            repr(feed) == "<MockQuakeMLFeed(home=(42.0, 13.0), "
+            "url=http://test.url/testpath, radius=250.0)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 2
+
+        assert round(abs(entries[0].distance_to_home - 66.0), 1) == 0
+        assert round(abs(entries[1].distance_to_home - 203.4), 1) == 0
+
+
 # @pytest.mark.asyncio
 # async def test_update_ok_with_filter_override(aresponses, event_loop):
 #     """Test updating feed is ok."""

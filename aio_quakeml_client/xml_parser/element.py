@@ -1,12 +1,17 @@
 """Base class for any QuakeML elements."""
 from __future__ import annotations
 
+import logging
 from typing import Dict, List, Optional
 
 from ..consts import XML_ATTR_PUBLICID, XML_CDATA, XML_TAG_TYPE
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class Element:
+    """Element."""
+
     def __init__(self, source: Dict):
         """Initialise feed."""
         self._source = source
