@@ -7,7 +7,7 @@ import aiohttp
 import pytest
 from aiohttp import ClientOSError
 
-from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK
+from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from tests import MockQuakeMLFeed
 from tests.utils import load_fixture
 
@@ -73,6 +73,10 @@ async def test_update_ok(aresponses, event_loop):
         assert feed_entry.magnitude.type == "ML"
         assert feed_entry.magnitude.mag == 2.6
         assert feed_entry.magnitude.station_count == 72
+        assert (
+            repr(feed_entry.magnitude)
+            == "<Magnitude(smi:webservices.ingv.it/fdsnws/event/1/query?magnitudeId=108867501)>"
+        )
 
         assert feed_entry.creation_info.agency_id == "INGV"
         assert feed_entry.creation_info.author == "hew10_mole#MOD_EQASSEMBLE"
@@ -111,6 +115,9 @@ async def test_update_edge_cases(aresponses, event_loop):
             == "smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595192"
         )
         assert feed_entry.coordinates == (42.5218, 13.3833)
+        assert feed_entry.origin.depth is None
+        assert feed_entry.origin.depth_type is None
+        assert feed_entry.origin.time is None
         assert feed_entry.magnitude is None
         assert feed_entry.creation_info is None
         assert feed_entry.description is None
@@ -243,33 +250,59 @@ async def test_update_with_xml_decode_error(aresponses, event_loop):
         assert entries is None
 
 
-# @pytest.mark.asyncio
-# async def test_update_ok_feed_feature(aresponses, event_loop):
-#     """Test updating feed is ok."""
-#     home_coordinates = (-31.0, 151.0)
-#     aresponses.add(
-#         "test.url",
-#         "/testpath",
-#         "get",
-#         aresponses.Response(text=load_fixture("generic_feed_4.json"), status=200),
-#     )
-#
-#     async with aiohttp.ClientSession(loop=event_loop) as websession:
-#
-#         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
-#         assert (
-#             repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
-#             "url=http://test.url/testpath, radius=None)>"
-#         )
-#         status, entries = await feed.update()
-#         assert status == UPDATE_OK
-#         assert entries is not None
-#         assert len(entries) == 1
-#
-#         feed_entry = entries[0]
-#         assert feed_entry is not None
-#         assert feed_entry.title == "Title 1"
-#         assert feed_entry.external_id == "3456"
-#         assert feed_entry.coordinates == (-37.2345, 149.1234)
-#         assert round(abs(feed_entry.distance_to_home - 714.4), 1) == 0
-#         assert repr(feed_entry) == "<MockFeedEntry(id=3456)>"
+@pytest.mark.asyncio
+async def test_update_bom(aresponses, event_loop):
+    """Test updating feed with BOM (byte order mark) is ok."""
+    home_coordinates = (-31.0, 151.0)
+    xml = (
+        "\xef\xbb\xbf<?xml version='1.0' encoding='utf-8'?>"
+        '<q:quakeml xmlns:q="http://quakeml.org/xmlns/quakeml/1.2"><eventParameters '
+        'publicID="smi:webservices.ingv.it/fdsnws/event/1/query"><event><origin '
+        'publicID="smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595192">'
+        "<latitude><value>42.5218</value></latitude><longitude><value>42.5218</value>"
+        "</longitude></origin></event></eventParameters></q:quakeml>"
+    )
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=xml, charset="iso-8859-1", status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None, "
+            "magnitude=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+
+@pytest.mark.asyncio
+async def test_update_not_xml(aresponses, event_loop):
+    """Test updating feed where returned payload is not XML."""
+    # If a server returns invalid payload (00 control characters) this results in an
+    # exception thrown: ExpatError: not well-formed (invalid token): line 1, column 0
+    home_coordinates = (-31.0, 151.0)
+    not_xml = "\x00\x00\x00"
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=not_xml, status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None, "
+            "magnitude=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK_NO_DATA
+        assert entries is None

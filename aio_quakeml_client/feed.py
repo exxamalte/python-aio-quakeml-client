@@ -10,6 +10,7 @@ from typing import Dict, Generic, List, Optional, Tuple, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
+from pyexpat import ExpatError
 
 from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed_entry import FeedEntry
@@ -119,6 +120,11 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                         "Fetching data from %s failed with %s", self._url, client_error
                     )
                     return UPDATE_ERROR, None
+                except ExpatError as expat_error:
+                    _LOGGER.warning(
+                        "Parsing data from %s failed with %s", self._url, expat_error
+                    )
+                    return UPDATE_OK_NO_DATA, None
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning(
                 "Requesting data from %s failed with " "client error: %s",
