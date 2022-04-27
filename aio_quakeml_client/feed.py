@@ -106,11 +106,14 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                 try:
                     response.raise_for_status()
                     text = await self._read_response(response)
-                    parser = XmlParser(self._additional_namespaces())
-                    feed_data = parser.parse(text)
-                    self.parser = parser
-                    self.feed_data = feed_data
-                    return UPDATE_OK, feed_data
+                    if text:
+                        parser = XmlParser(self._additional_namespaces())
+                        feed_data = parser.parse(text)
+                        self.parser = parser
+                        self.feed_data = feed_data
+                        return UPDATE_OK, feed_data
+                    else:
+                        return UPDATE_OK_NO_DATA, None
                 except client_exceptions.ClientError as client_error:
                     _LOGGER.warning(
                         "Fetching data from %s failed with %s", self._url, client_error

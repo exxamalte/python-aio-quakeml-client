@@ -3,7 +3,7 @@
   <eventParameters publicID="smi:webservices.ingv.it/fdsnws/event/1/query">
     <event publicID="11">
       <description>
-        <text>Description 11</text>
+        <text>Description 11 UPDATED</text>
       </description>
       <origin publicID="12">
         <latitude>
@@ -30,22 +30,22 @@
       </origin>
       <magnitude publicID="23">
         <mag>
-          <value>3.6</value>
+          <value>3.7</value>
         </mag>
       </magnitude>
     </event>
-    <event publicID="31">
-      <origin publicID="32">
+    <event publicID="41">
+      <origin publicID="42">
         <latitude>
-          <value>44.5218</value>
+          <value>44.5219</value>
         </latitude>
         <longitude>
-          <value>15.3833</value>
+          <value>15.3834</value>
         </longitude>
       </origin>
-      <magnitude publicID="33">
+      <magnitude publicID="43">
         <mag>
-          <value>4.6</value>
+          <value>5.6</value>
         </mag>
       </magnitude>
     </event>
