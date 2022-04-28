@@ -105,7 +105,7 @@ async def test_update_edge_cases(aresponses, event_loop):
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
-        assert len(entries) == 2
+        assert len(entries) == 3
 
         feed_entry = entries[0]
         assert feed_entry is not None
@@ -126,6 +126,14 @@ async def test_update_edge_cases(aresponses, event_loop):
         assert feed_entry is not None
         assert feed_entry.magnitude is not None
         assert feed_entry.magnitude.mag == 2.7
+        assert feed_entry.creation_info is not None
+        assert feed_entry.creation_info.creation_time == datetime.datetime(
+            2022, 4, 28, 10, 0, 0, 0, tzinfo=datetime.timezone.utc
+        )
+
+        assert feed.last_timestamp == datetime.datetime(
+            2022, 4, 28, 11, 0, 0, 0, tzinfo=datetime.timezone.utc
+        )
 
 
 @pytest.mark.asyncio
