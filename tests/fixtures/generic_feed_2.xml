@@ -25,6 +25,27 @@
           <value>2.7</value>
         </mag>
       </magnitude>
+      <creationInfo>
+        <creationTime>2022-04-28T10:00:00.000Z</creationTime>
+      </creationInfo>
+    </event>
+    <event>
+      <origin publicID="smi:webservices.ingv.it/fdsnws/event/1/query?originId=101595194">
+        <latitude>
+          <value>42.5220</value>
+        </latitude>
+        <longitude>
+          <value>13.3835</value>
+        </longitude>
+      </origin>
+      <magnitude publicID="smi:webservices.ingv.it/fdsnws/event/1/query?magnitudeId=108867503">
+        <mag>
+          <value>2.8</value>
+        </mag>
+      </magnitude>
+      <creationInfo>
+        <creationTime>2022-04-28T11:00:00.000Z</creationTime>
+      </creationInfo>
     </event>
   </eventParameters>
 </q:quakeml>

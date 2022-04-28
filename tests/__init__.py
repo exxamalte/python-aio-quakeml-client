@@ -1,5 +1,4 @@
 """Tests for QuakeML library."""
-from datetime import datetime
 from typing import Dict, Optional, Tuple
 
 from aio_quakeml_client.feed import QuakeMLFeed
@@ -15,9 +14,6 @@ class MockFeedEntry(FeedEntry):
 
 class MockQuakeMLFeed(QuakeMLFeed[MockFeedEntry]):
     def _extract_from_feed(self, feed) -> Optional:
-        return None
-
-    def _extract_last_timestamp(self, feed_entries) -> Optional[datetime]:
         return None
 
     def _new_entry(
