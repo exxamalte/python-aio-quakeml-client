@@ -103,9 +103,9 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         self, method: str = "GET", headers=None, params=None
     ) -> Tuple[str, Optional[EventParameters]]:
         """Fetch QuakeML data from external source."""
+        url = self._fetch_url()
         try:
             timeout = aiohttp.ClientTimeout(total=self._client_session_timeout())
-            url = self._fetch_url()
             async with self._websession.request(
                 method, url, headers=headers, params=params, timeout=timeout
             ) as response:
