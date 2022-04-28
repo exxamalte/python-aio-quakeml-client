@@ -199,7 +199,11 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
             dates = sorted(
-                [entry.published for entry in feed_entries if entry.published],
+                [
+                    entry.creation_info.creation_time
+                    for entry in feed_entries
+                    if entry.creation_info and entry.creation_info.creation_time
+                ],
                 reverse=True,
             )
             if dates:
