@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3 (29/04/2022)
+* Extract last timestamp from entries' creation info.
+* Fix potential bug where dynamic URL is not yet initialised.
+
 ## 0.2 (29/04/2022)
 * Made feed URL dynamically configurable in case the QuakeML feed supports parameters
   that could change with each call.
