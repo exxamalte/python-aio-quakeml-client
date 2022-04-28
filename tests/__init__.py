@@ -24,3 +24,9 @@ class MockQuakeMLFeed(QuakeMLFeed[MockFeedEntry]):
         self, home_coordinates: Tuple[float, float], event: Event, global_data: Dict
     ) -> MockFeedEntry:
         return MockFeedEntry(home_coordinates, event)
+
+
+class MockConfigurabelUrlQuakeMLFeed(MockQuakeMLFeed):
+    def _fetch_url(self):
+        """Return URL to fetch QuakeML data from."""
+        return "http://test.url/customtestpath"

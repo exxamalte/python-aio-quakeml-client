@@ -8,7 +8,7 @@ import pytest
 from aiohttp import ClientOSError
 
 from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
-from tests import MockQuakeMLFeed
+from tests import MockConfigurabelUrlQuakeMLFeed, MockQuakeMLFeed
 from tests.utils import load_fixture
 
 
@@ -188,6 +188,37 @@ async def test_update_ok_with_magnitude_filter(aresponses, event_loop):
 
         assert entries[0].magnitude.mag == 3.6
         assert entries[1].magnitude.mag == 4.6
+
+
+@pytest.mark.asyncio
+async def test_update_with_configurable_url(aresponses, event_loop):
+    """Test updating feed is ok."""
+    home_coordinates = (-31.0, 151.0)
+    aresponses.add(
+        "test.url",
+        "/customtestpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockConfigurabelUrlQuakeMLFeed(websession, home_coordinates)
+        assert (
+            repr(feed) == "<MockConfigurabelUrlQuakeMLFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/customtestpath, radius=None, magnitude=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+        feed_entry = entries[0]
+        assert feed_entry is not None
+        assert (
+            feed_entry.external_id
+            == "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=30116321"
+        )
 
 
 @pytest.mark.asyncio

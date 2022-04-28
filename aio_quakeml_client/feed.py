@@ -29,7 +29,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         self,
         websession: ClientSession,
         home_coordinates: Tuple[float, float],
-        url: str,
+        url: str = None,
         filter_radius: float = None,
         filter_minimum_magnitude: float = None,
     ):
@@ -46,7 +46,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         return "<{}(home={}, url={}, radius={}, magnitude={})>".format(
             self.__class__.__name__,
             self._home_coordinates,
-            self._url,
+            self._fetch_url(),
             self._filter_radius,
             self._filter_minimum_magnitude,
         )
@@ -95,14 +95,19 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
             self._last_timestamp = None
             return UPDATE_ERROR, None
 
+    def _fetch_url(self):
+        """Return URL to fetch QuakeML data from."""
+        return self._url
+
     async def _fetch(
         self, method: str = "GET", headers=None, params=None
     ) -> Tuple[str, Optional[EventParameters]]:
         """Fetch QuakeML data from external source."""
         try:
             timeout = aiohttp.ClientTimeout(total=self._client_session_timeout())
+            url = self._fetch_url()
             async with self._websession.request(
-                method, self._url, headers=headers, params=params, timeout=timeout
+                method, url, headers=headers, params=params, timeout=timeout
             ) as response:
                 try:
                     response.raise_for_status()
@@ -117,25 +122,23 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                         return UPDATE_OK_NO_DATA, None
                 except client_exceptions.ClientError as client_error:
                     _LOGGER.warning(
-                        "Fetching data from %s failed with %s", self._url, client_error
+                        "Fetching data from %s failed with %s", url, client_error
                     )
                     return UPDATE_ERROR, None
                 except ExpatError as expat_error:
                     _LOGGER.warning(
-                        "Parsing data from %s failed with %s", self._url, expat_error
+                        "Parsing data from %s failed with %s", url, expat_error
                     )
                     return UPDATE_OK_NO_DATA, None
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning(
                 "Requesting data from %s failed with " "client error: %s",
-                self._url,
+                url,
                 client_error,
             )
             return UPDATE_ERROR, None
         except asyncio.TimeoutError:
-            _LOGGER.warning(
-                "Requesting data from %s failed with " "timeout error", self._url
-            )
+            _LOGGER.warning("Requesting data from %s failed with " "timeout error", url)
             return UPDATE_ERROR, None
 
     async def _read_response(self, response):
