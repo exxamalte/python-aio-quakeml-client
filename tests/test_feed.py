@@ -43,7 +43,7 @@ async def test_update_ok(aresponses, event_loop):
         )
 
         assert feed_entry.description == "Region name: 4 km S Campotosto (AQ)"
-        assert feed_entry.type == "Earthquake"
+        assert feed_entry.type == "earthquake"
 
         assert (
             feed_entry.origin.public_id
@@ -54,7 +54,7 @@ async def test_update_ok(aresponses, event_loop):
         assert feed_entry.origin.longitude == 13.3833
         assert feed_entry.origin.type == "hypocenter"
         assert feed_entry.origin.depth == 14500
-        assert feed_entry.origin.depth_type == "From location"
+        assert feed_entry.origin.depth_type == "from location"
         assert feed_entry.origin.time == datetime.datetime(
             2022, 3, 1, 22, 53, 55, 680000, tzinfo=datetime.timezone.utc
         )
