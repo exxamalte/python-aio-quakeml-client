@@ -148,7 +148,6 @@ class XmlParser:
     def _create_feed_from_quakeml(parsed_dict: Dict) -> Optional[EventParameters]:
         """Create feed from provided RSS data."""
         quakeml = parsed_dict.get(XML_TAG_Q_QUAKEML)
-        print(quakeml)
         if XML_TAG_EVENTPARAMETERS in quakeml:
             events = quakeml.get(XML_TAG_EVENTPARAMETERS)
             return EventParameters(events)
