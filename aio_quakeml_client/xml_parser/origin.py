@@ -46,10 +46,7 @@ class Origin(Element):
     @property
     def depth_type(self) -> str | None:
         """Return type of depth determination."""
-        depth_type = self._attribute([XML_TAG_DEPTHTYPE])
-        if depth_type:
-            return depth_type.capitalize()
-        return None
+        return self._attribute([XML_TAG_DEPTHTYPE])
 
     @property
     def time(self) -> datetime | None:
