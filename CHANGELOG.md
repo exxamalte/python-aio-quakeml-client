@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4 (29/04/2022)
+* Remove unnecessary print statement.
+* Remove string capitalisation in two instances.
+
 ## 0.3 (29/04/2022)
 * Extract last timestamp from entries' creation info.
 * Fix potential bug where dynamic URL is not yet initialised.
