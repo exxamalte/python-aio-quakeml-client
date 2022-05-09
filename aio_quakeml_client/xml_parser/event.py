@@ -72,6 +72,7 @@ class Event(Element):
 
     @property
     def creation_info(self) -> CreationInfo | None:
+        """Creation info about this event."""
         creation_info = self.attribute([XML_TAG_CREATIONINFO])
         if creation_info:
             return CreationInfo(creation_info)
