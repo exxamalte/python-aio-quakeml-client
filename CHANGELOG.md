@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5 (09/05/2022)
+* Improved extensibility for implementing libraries.
+* General code improvements.
+
 ## 0.4 (29/04/2022)
 * Remove unnecessary print statement.
 * Remove string capitalisation in two instances.
