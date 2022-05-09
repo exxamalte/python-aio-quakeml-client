@@ -11,4 +11,4 @@ class Description(Element):
     @property
     def text(self) -> str | None:
         """Return description's text."""
-        return self._attribute_with_text([XML_TAG_TEXT])
+        return self.attribute_with_text([XML_TAG_TEXT])
