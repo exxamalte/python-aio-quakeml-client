@@ -75,15 +75,6 @@ async def test_feed_manager(aresponses, event_loop):
         assert feed_entry.external_id == "31"
         assert feed_entry.magnitude.mag == 4.6
 
-        # external_id = hash((-37.8901, 149.7890))
-        # feed_entry = entries.get(external_id)
-        # assert feed_entry.title is None
-        # assert feed_entry.external_id == external_id
-        #
-        # feed_entry = entries.get("7890")
-        # assert feed_entry.title == "Title 5"
-        # assert feed_entry.external_id == "7890"
-        #
         # Simulate an update with several changes.
         generated_entity_external_ids.clear()
         updated_entity_external_ids.clear()

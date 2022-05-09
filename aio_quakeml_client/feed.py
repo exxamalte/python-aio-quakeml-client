@@ -56,7 +56,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         self,
         home_coordinates: Tuple[float, float],
         event: Event,
-        global_data: Dict,
+        global_data: Dict | None,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
@@ -185,13 +185,9 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
-    def _extract_from_feed(self, feed: EventParameters) -> Dict:
+    def _extract_from_feed(self, feed: EventParameters) -> Dict | None:
         """Extract global metadata from feed."""
-        global_data = {}
-        # author = feed.author
-        # if author:
-        #     global_data[ATTR_ATTRIBUTION] = author
-        return global_data
+        return None
 
     def _extract_last_timestamp(
         self, feed_entries: List[T_FEED_ENTRY]
