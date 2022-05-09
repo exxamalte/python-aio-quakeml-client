@@ -22,7 +22,7 @@ class Origin(Element):
     @property
     def latitude(self) -> float | None:
         """Return the hypocenter latitude."""
-        latitude = self._attribute([XML_TAG_LATITUDE])
+        latitude = self.attribute([XML_TAG_LATITUDE])
         if latitude:
             return latitude.get(XML_TAG_VALUE)
         return None
@@ -30,7 +30,7 @@ class Origin(Element):
     @property
     def longitude(self) -> float | None:
         """Return the hypocenter longitude."""
-        longitude = self._attribute([XML_TAG_LONGITUDE])
+        longitude = self.attribute([XML_TAG_LONGITUDE])
         if longitude:
             return longitude.get(XML_TAG_VALUE)
         return None
@@ -38,7 +38,7 @@ class Origin(Element):
     @property
     def depth(self) -> float | None:
         """Return depth of hypocenter with respect to the nominal sea level."""
-        depth = self._attribute([XML_TAG_DEPTH])
+        depth = self.attribute([XML_TAG_DEPTH])
         if depth:
             return depth.get(XML_TAG_VALUE)
         return None
@@ -46,12 +46,12 @@ class Origin(Element):
     @property
     def depth_type(self) -> str | None:
         """Return type of depth determination."""
-        return self._attribute([XML_TAG_DEPTHTYPE])
+        return self.attribute([XML_TAG_DEPTHTYPE])
 
     @property
     def time(self) -> datetime | None:
         """Return focal time."""
-        time = self._attribute([XML_TAG_TIME])
+        time = self.attribute([XML_TAG_TIME])
         if time:
             return time.get(XML_TAG_VALUE)
         return None
@@ -59,9 +59,9 @@ class Origin(Element):
     @property
     def evaluation_mode(self) -> str | None:
         """Return mode of evaluation ."""
-        return self._attribute_with_text([XML_TAG_EVALUATIONMODE])
+        return self.attribute_with_text([XML_TAG_EVALUATIONMODE])
 
     @property
     def evaluation_status(self) -> str | None:
         """Return status of evaluation ."""
-        return self._attribute_with_text([XML_TAG_EVALUATIONSTATUS])
+        return self.attribute_with_text([XML_TAG_EVALUATIONSTATUS])

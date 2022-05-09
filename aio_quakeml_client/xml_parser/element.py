@@ -20,7 +20,7 @@ class Element:
         """Return string representation of this feed item."""
         return "<{}({})>".format(self.__class__.__name__, self.public_id)
 
-    def _attribute(self, names: List[str]) -> Optional:
+    def attribute(self, names: List[str]) -> Optional:
         """Get an attribute from this element."""
         if self._source and names:
             # Try each name, and return the first value that is not None.
@@ -30,27 +30,27 @@ class Element:
                     return value
         return None
 
-    def _attribute_with_text(self, names: List[str]) -> Optional:
+    def attribute_with_text(self, names: List[str]) -> Optional:
         """Get an attribute with text from this element."""
-        value = self._attribute(names)
+        value = self.attribute(names)
         if value and isinstance(value, dict) and XML_CDATA in value:
             # <tag attr="/some.uri">Value</tag>
             value = value.get(XML_CDATA)
         return value
 
     @staticmethod
-    def _attribute_in_structure(obj, keys: List[str]) -> Optional:
+    def attribute_in_structure(obj, keys: List[str]) -> Optional:
         """Return the attribute found under the chain of keys."""
         key = keys.pop(0)
         if key in obj:
-            return Element._attribute_in_structure(obj[key], keys) if keys else obj[key]
+            return Element.attribute_in_structure(obj[key], keys) if keys else obj[key]
 
     @property
     def public_id(self) -> str | None:
         """Return the public id of this element."""
-        return self._attribute([XML_ATTR_PUBLICID])
+        return self.attribute([XML_ATTR_PUBLICID])
 
     @property
     def type(self) -> str | None:
         """Return element's type."""
-        return self._attribute_with_text([XML_TAG_TYPE])
+        return self.attribute_with_text([XML_TAG_TYPE])

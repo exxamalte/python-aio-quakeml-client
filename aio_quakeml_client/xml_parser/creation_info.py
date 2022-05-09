@@ -11,14 +11,14 @@ class CreationInfo(Element):
     @property
     def agency_id(self) -> str | None:
         """Return designation of agency that published a resource."""
-        return self._attribute_with_text([XML_TAG_AGENCYID])
+        return self.attribute_with_text([XML_TAG_AGENCYID])
 
     @property
     def author(self) -> str | None:
         """Return name describing the author of a resource."""
-        return self._attribute_with_text([XML_TAG_AUTHOR])
+        return self.attribute_with_text([XML_TAG_AUTHOR])
 
     @property
     def creation_time(self) -> str | None:
         """Return time of creation of a resource."""
-        return self._attribute_with_text([XML_TAG_CREATIONTIME])
+        return self.attribute_with_text([XML_TAG_CREATIONTIME])

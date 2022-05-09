@@ -11,7 +11,7 @@ class Magnitude(Element):
     @property
     def mag(self) -> float | None:
         """Return magnitude value."""
-        time = self._attribute([XML_TAG_MAG])
+        time = self.attribute([XML_TAG_MAG])
         if time:
             return time.get(XML_TAG_VALUE)
         return None
@@ -19,4 +19,4 @@ class Magnitude(Element):
     @property
     def station_count(self) -> int | None:
         """Return number of used stations for this magnitude computation."""
-        return self._attribute_with_text([XML_TAG_STATIONCOUNT])
+        return self.attribute_with_text([XML_TAG_STATIONCOUNT])
