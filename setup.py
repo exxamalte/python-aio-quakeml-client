@@ -11,7 +11,7 @@ URL = "https://github.com/exxamalte/python-aio-quakeml-client"
 REQUIRES = [
     "aiohttp>=3.7.4,<4",
     "haversine>=2.5.1",
-    "xmltodict>=0.12.0",
+    "xmltodict>=0.13.0",
     "dateparser>=1.1.6",
 ]
 
