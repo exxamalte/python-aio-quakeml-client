@@ -12,7 +12,7 @@ REQUIRES = [
     "aiohttp>=3.7.4,<4",
     "haversine>=2.5.1",
     "xmltodict>=0.12.0",
-    "dateparser>=1.1.1",
+    "dateparser>=1.1.6",
 ]
 
 
