@@ -1,5 +1,10 @@
 # Changes
 
+## 0.6 (27/01/2023)
+* Added Python 3.11 support.
+* Removed deprecated asynctest dependency.
+* Bumped library versions: black, dateparser, xmltodict, haversine.
+
 ## 0.5 (09/05/2022)
 * Improved extensibility for implementing libraries.
 * General code improvements.
