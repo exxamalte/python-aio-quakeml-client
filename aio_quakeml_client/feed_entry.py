@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 import re
 from abc import ABC, abstractmethod
-from typing import Tuple
 
 from haversine import haversine
 
@@ -20,17 +19,17 @@ _LOGGER = logging.getLogger(__name__)
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self, home_coordinates: Tuple[float, float], quakeml_event: Event):
+    def __init__(self, home_coordinates: tuple[float, float], quakeml_event: Event):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._quakeml_event = quakeml_event
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return "<{}(id={})>".format(self.__class__.__name__, self.external_id)
+        return f"<{self.__class__.__name__}(id={self.external_id})>"
 
     @property
-    def coordinates(self) -> Tuple[float, float] | None:
+    def coordinates(self) -> tuple[float, float] | None:
         """Return the coordinates (latitude, longitude) of this entry."""
         if self.origin and self.origin.latitude and self.origin.longitude:
             return self.origin.latitude, self.origin.longitude

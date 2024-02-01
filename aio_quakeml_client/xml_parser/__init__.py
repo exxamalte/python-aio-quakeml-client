@@ -2,9 +2,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, Optional
 
-import dateparser as dateparser
+import dateparser
 import xmltodict
 
 from aio_quakeml_client.consts import (
@@ -96,7 +95,7 @@ KEY_CHAINS_FLOAT = [
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces: Dict = None):
+    def __init__(self, additional_namespaces: dict = None):
         """Initialise the XML parser."""
         self._namespaces = DEFAULT_NAMESPACES
         if additional_namespaces:
@@ -131,7 +130,7 @@ class XmlParser:
                     return True
         return False
 
-    def parse(self, xml) -> Optional[EventParameters]:
+    def parse(self, xml) -> EventParameters | None:
         """Parse the provided xml."""
         if xml:
             parsed_dict = xmltodict.parse(
@@ -145,7 +144,7 @@ class XmlParser:
         return None
 
     @staticmethod
-    def _create_feed_from_quakeml(parsed_dict: Dict) -> Optional[EventParameters]:
+    def _create_feed_from_quakeml(parsed_dict: dict) -> EventParameters | None:
         """Create feed from provided RSS data."""
         quakeml = parsed_dict.get(XML_TAG_Q_QUAKEML)
         if XML_TAG_EVENTPARAMETERS in quakeml:

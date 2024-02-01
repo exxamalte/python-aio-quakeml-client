@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional
+from typing import Optional
 
 from ..consts import XML_ATTR_PUBLICID, XML_CDATA, XML_TAG_TYPE
 
@@ -12,15 +12,15 @@ _LOGGER = logging.getLogger(__name__)
 class Element:
     """Element."""
 
-    def __init__(self, source: Dict):
+    def __init__(self, source: dict):
         """Initialise feed."""
         self._source = source
 
     def __repr__(self):
         """Return string representation of this feed item."""
-        return "<{}({})>".format(self.__class__.__name__, self.public_id)
+        return f"<{self.__class__.__name__}({self.public_id})>"
 
-    def attribute(self, names: List[str]) -> Optional:
+    def attribute(self, names: list[str]) -> Optional:
         """Get an attribute from this element."""
         if self._source and names:
             # Try each name, and return the first value that is not None.
@@ -30,7 +30,7 @@ class Element:
                     return value
         return None
 
-    def attribute_with_text(self, names: List[str]) -> Optional:
+    def attribute_with_text(self, names: list[str]) -> Optional:
         """Get an attribute with text from this element."""
         value = self.attribute(names)
         if value and isinstance(value, dict) and XML_CDATA in value:
@@ -39,7 +39,7 @@ class Element:
         return value
 
     @staticmethod
-    def attribute_in_structure(obj, keys: List[str]) -> Optional:
+    def attribute_in_structure(obj, keys: list[str]) -> Optional:
         """Return the attribute found under the chain of keys."""
         key = keys.pop(0)
         if key in obj:
