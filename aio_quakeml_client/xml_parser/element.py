@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from ..consts import XML_ATTR_PUBLICID, XML_CDATA, XML_TAG_TYPE
 
@@ -20,7 +19,7 @@ class Element:
         """Return string representation of this feed item."""
         return f"<{self.__class__.__name__}({self.public_id})>"
 
-    def attribute(self, names: list[str]) -> Optional:
+    def attribute(self, names: list[str]) -> str | dict | None:
         """Get an attribute from this element."""
         if self._source and names:
             # Try each name, and return the first value that is not None.
@@ -30,7 +29,7 @@ class Element:
                     return value
         return None
 
-    def attribute_with_text(self, names: list[str]) -> Optional:
+    def attribute_with_text(self, names: list[str]) -> str | int:
         """Get an attribute with text from this element."""
         value = self.attribute(names)
         if value and isinstance(value, dict) and XML_CDATA in value:
@@ -39,9 +38,9 @@ class Element:
         return value
 
     @staticmethod
-    def attribute_in_structure(obj, keys: list[str]) -> Optional:
+    def attribute_in_structure(obj, keys: list[str]) -> str:
         """Return the attribute found under the chain of keys."""
-        key = keys.pop(0)
+        key: str = keys.pop(0)
         if key in obj:
             return Element.attribute_in_structure(obj[key], keys) if keys else obj[key]
 

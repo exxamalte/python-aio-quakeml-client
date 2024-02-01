@@ -16,8 +16,8 @@ class EventParameters(Element):
     @property
     def events(self) -> list[Event]:
         """Return the events of this feed."""
-        items = self.attribute([XML_TAG_EVENT])
-        entries = []
+        items: dict | None = self.attribute([XML_TAG_EVENT])
+        entries: list = []
         if items and isinstance(items, list):
             for item in items:
                 entries.append(Event(item))

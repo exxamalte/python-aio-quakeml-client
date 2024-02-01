@@ -24,7 +24,7 @@ class Event(Element):
     @property
     def description(self) -> Description | None:
         """Event description."""
-        description = self.attribute([XML_TAG_DESCRIPTION])
+        description: dict | None = self.attribute([XML_TAG_DESCRIPTION])
         if description:
             return Description(description)
         return None
@@ -39,8 +39,8 @@ class Event(Element):
     @property
     def origins(self) -> list[Origin] | None:
         """Origins defined for this event."""
-        origins = self.attribute([XML_TAG_ORIGIN])
-        entries = []
+        origins: dict = self.attribute([XML_TAG_ORIGIN])
+        entries: list = []
         if origins:
             if isinstance(origins, list):
                 for origin in origins:
@@ -59,8 +59,8 @@ class Event(Element):
     @property
     def magnitudes(self) -> list[Magnitude] | None:
         """Magnitudes defined for this event."""
-        magnitudes = self.attribute([XML_TAG_MAGNITUDE])
-        entries = []
+        magnitudes: dict | None = self.attribute([XML_TAG_MAGNITUDE])
+        entries: list = []
         if magnitudes:
             if isinstance(magnitudes, list):
                 for magnitude in magnitudes:
@@ -72,7 +72,7 @@ class Event(Element):
     @property
     def creation_info(self) -> CreationInfo | None:
         """Creation info about this event."""
-        creation_info = self.attribute([XML_TAG_CREATIONINFO])
+        creation_info: dict | None = self.attribute([XML_TAG_CREATIONINFO])
         if creation_info:
             return CreationInfo(creation_info)
         return None
