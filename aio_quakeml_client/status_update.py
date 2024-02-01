@@ -30,9 +30,7 @@ class StatusUpdate:
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return "<{}({}@{})>".format(
-            self.__class__.__name__, self.status, self.last_update
-        )
+        return f"<{self.__class__.__name__}({self.status}@{self.last_update})>"
 
     @property
     def status(self) -> str:

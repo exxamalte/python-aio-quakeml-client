@@ -6,7 +6,7 @@ import codecs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Dict, Generic, List, Optional, Tuple, TypeVar
+from typing import Generic, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
@@ -28,7 +28,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
     def __init__(
         self,
         websession: ClientSession,
-        home_coordinates: Tuple[float, float],
+        home_coordinates: tuple[float, float],
         url: str = None,
         filter_radius: float = None,
         filter_minimum_magnitude: float = None,
@@ -54,9 +54,9 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
     @abstractmethod
     def _new_entry(
         self,
-        home_coordinates: Tuple[float, float],
+        home_coordinates: tuple[float, float],
         event: Event,
-        global_data: Dict | None,
+        global_data: dict | None,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
@@ -65,11 +65,11 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    def _additional_namespaces(self) -> Dict | None:
+    def _additional_namespaces(self) -> dict | None:
         """Provide additional namespaces, relevant for this feed."""
         pass
 
-    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, quakeml_data = await self._fetch()
         if status == UPDATE_OK:
@@ -101,7 +101,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     async def _fetch(
         self, method: str = "GET", headers=None, params=None
-    ) -> Tuple[str, Optional[EventParameters]]:
+    ) -> tuple[str, EventParameters | None]:
         """Fetch QuakeML data from external source."""
         url = self._fetch_url()
         try:
@@ -151,7 +151,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
+    def _filter_entries(self, entries: list[T_FEED_ENTRY]) -> list[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -185,12 +185,12 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
-    def _extract_from_feed(self, feed: EventParameters) -> Dict | None:
+    def _extract_from_feed(self, feed: EventParameters) -> dict | None:
         """Extract global metadata from feed."""
         return None
 
     def _extract_last_timestamp(
-        self, feed_entries: List[T_FEED_ENTRY]
+        self, feed_entries: list[T_FEED_ENTRY]
     ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:

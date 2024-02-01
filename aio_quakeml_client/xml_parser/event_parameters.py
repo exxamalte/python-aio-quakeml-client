@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import List
 
 from ..consts import XML_TAG_EVENT
 from .element import Element
@@ -15,7 +14,7 @@ class EventParameters(Element):
     """Represents event parameters."""
 
     @property
-    def events(self) -> List[Event]:
+    def events(self) -> list[Event]:
         """Return the events of this feed."""
         items = self.attribute([XML_TAG_EVENT])
         entries = []

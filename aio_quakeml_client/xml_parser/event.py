@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import List
 
 from ..consts import (
     XML_TAG_CREATIONINFO,
@@ -38,7 +37,7 @@ class Event(Element):
         return None
 
     @property
-    def origins(self) -> List[Origin] | None:
+    def origins(self) -> list[Origin] | None:
         """Origins defined for this event."""
         origins = self.attribute([XML_TAG_ORIGIN])
         entries = []
@@ -58,7 +57,7 @@ class Event(Element):
         return None
 
     @property
-    def magnitudes(self) -> List[Magnitude] | None:
+    def magnitudes(self) -> list[Magnitude] | None:
         """Magnitudes defined for this event."""
         magnitudes = self.attribute([XML_TAG_MAGNITUDE])
         entries = []
