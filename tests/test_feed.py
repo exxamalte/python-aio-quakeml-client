@@ -1,6 +1,7 @@
 """Test for the generic QuakeML feed."""
 import asyncio
 import datetime
+from http import HTTPStatus
 from unittest.mock import MagicMock
 
 import aiohttp
@@ -13,18 +14,16 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_update_ok(aresponses, event_loop):
+async def test_update_ok(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
@@ -86,17 +85,16 @@ async def test_update_ok(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_edge_cases(aresponses, event_loop):
+async def test_update_edge_cases(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_2.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_2.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
@@ -137,17 +135,16 @@ async def test_update_edge_cases(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_filter(aresponses, event_loop):
+async def test_update_ok_with_radius_filter(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (42.0, 13.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_3.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_3.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(
             websession,
             home_coordinates,
@@ -168,17 +165,16 @@ async def test_update_ok_with_radius_filter(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_magnitude_filter(aresponses, event_loop):
+async def test_update_ok_with_magnitude_filter(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (42.0, 13.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_3.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_3.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(
             websession,
             home_coordinates,
@@ -199,18 +195,16 @@ async def test_update_ok_with_magnitude_filter(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_configurable_url(aresponses, event_loop):
+async def test_update_with_configurable_url(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url",
-        "/customtestpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/customtestpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockConfigurabelUrlQuakeMLFeed(websession, home_coordinates)
         assert (
             repr(feed) == "<MockConfigurabelUrlQuakeMLFeed(home=(-31.0, 151.0), "
@@ -230,11 +224,11 @@ async def test_update_with_configurable_url(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_client_exception(event_loop):
+async def test_update_with_client_exception():
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
 
-    async with aiohttp.ClientSession(loop=event_loop):
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = ClientOSError
         feed = MockQuakeMLFeed(
@@ -246,11 +240,11 @@ async def test_update_with_client_exception(event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_timeout_error(event_loop):
+async def test_update_with_timeout_error():
     """Test updating feed results in timeout error."""
     home_coordinates = (-31.0, 151.0)
 
-    async with aiohttp.ClientSession(loop=event_loop):
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = asyncio.TimeoutError
         feed = MockQuakeMLFeed(
@@ -262,12 +256,15 @@ async def test_update_with_timeout_error(event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(aresponses, event_loop):
+async def test_update_with_request_exception(mock_aioresponse):
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add("test.url", "/badpath", "get", aresponses.Response(status=404))
+    mock_aioresponse.get(
+        "http://test.url/badpath",
+        status=HTTPStatus.NOT_FOUND,
+    )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -275,14 +272,16 @@ async def test_update_with_request_exception(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_xml_decode_error(aresponses, event_loop):
+async def test_update_with_xml_decode_error(mock_aioresponse):
     """Test updating feed raises exception."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url", "/badxml", "get", aresponses.Response(text="NOT XML", status=200)
+    mock_aioresponse.get(
+        "http://test.url/badxml",
+        status=HTTPStatus.OK,
+        body="NOT XML",
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/badjson")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -290,7 +289,7 @@ async def test_update_with_xml_decode_error(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_bom(aresponses, event_loop):
+async def test_update_bom(mock_aioresponse):
     """Test updating feed with BOM (byte order mark) is ok."""
     home_coordinates = (-31.0, 151.0)
     xml = (
@@ -301,14 +300,13 @@ async def test_update_bom(aresponses, event_loop):
         "<latitude><value>42.5218</value></latitude><longitude><value>42.5218</value>"
         "</longitude></origin></event></eventParameters></q:quakeml>"
     )
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=xml, charset="iso-8859-1", status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=xml.encode("iso-8859-1"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
@@ -322,20 +320,19 @@ async def test_update_bom(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_not_xml(aresponses, event_loop):
+async def test_update_not_xml(mock_aioresponse):
     """Test updating feed where returned payload is not XML."""
     # If a server returns invalid payload (00 control characters) this results in an
     # exception thrown: ExpatError: not well-formed (invalid token): line 1, column 0
     home_coordinates = (-31.0, 151.0)
     not_xml = "\x00\x00\x00"
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=not_xml, status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=not_xml,
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
