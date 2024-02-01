@@ -56,7 +56,7 @@ class QuakeMLFeedManagerBase:
             # Record current time of update.
             self._last_update_successful = self._last_update
             # For entity management the external ids from the feed are used.
-            feed_external_ids = {[entry.external_id for entry in feed_entries]}
+            feed_external_ids = {entry.external_id for entry in feed_entries}
             count_removed = await self._update_feed_remove_entries(feed_external_ids)
             count_updated = await self._update_feed_update_entries(feed_external_ids)
             count_created = await self._update_feed_create_entries(feed_external_ids)
