@@ -1,7 +1,4 @@
-"""Base class for the feed manager.
-
-This allows managing feeds and their entries throughout their life-cycle.
-"""
+"""Base class for the feed manager. This allows managing feeds and their entries throughout their life-cycle."""
 from __future__ import annotations
 
 import logging
