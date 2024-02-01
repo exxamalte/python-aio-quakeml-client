@@ -69,7 +69,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         """Provide additional namespaces, relevant for this feed."""
         pass
 
-    async def update(self) -> tuple[str, list[T_FEED_ENTRY]] | None:
+    async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, quakeml_data = await self._fetch()
         if status == UPDATE_OK:
