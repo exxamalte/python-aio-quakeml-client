@@ -28,15 +28,23 @@ class QuakeMLFeedManagerBase:
         status_async_callback: Callable[[StatusUpdate], Awaitable[None]] = None,
     ):
         """Initialise feed manager."""
-        self._feed = feed
-        self.feed_entries = {}
-        self._managed_external_ids = set()
-        self._last_update = None
-        self._last_update_successful = None
-        self._generate_async_callback = generate_async_callback
-        self._update_async_callback = update_async_callback
-        self._remove_async_callback = remove_async_callback
-        self._status_async_callback = status_async_callback
+        self._feed: QuakeMLFeed = feed
+        self.feed_entries: dict = {}
+        self._managed_external_ids: set = set()
+        self._last_update: datetime | None = None
+        self._last_update_successful: datetime | None = None
+        self._generate_async_callback: Callable[
+            [str], Awaitable[None]
+        ] = generate_async_callback
+        self._update_async_callback: Callable[
+            [str], Awaitable[None]
+        ] = update_async_callback
+        self._remove_async_callback: Callable[
+            [str], Awaitable[None]
+        ] = remove_async_callback
+        self._status_async_callback: Callable[
+            [StatusUpdate], Awaitable[None]
+        ] = status_async_callback
 
     def __repr__(self):
         """Return string representation of this feed."""
@@ -47,9 +55,9 @@ class QuakeMLFeedManagerBase:
         status, feed_entries = await self._feed.update()
         # Record current time of update.
         self._last_update = datetime.now()
-        count_created = 0
-        count_updated = 0
-        count_removed = 0
+        count_created: int = 0
+        count_updated: int = 0
+        count_removed: int = 0
         await self._store_feed_entries(status, feed_entries)
         if status == UPDATE_OK:
             _LOGGER.debug("Data retrieved %s", feed_entries)
@@ -86,21 +94,21 @@ class QuakeMLFeedManagerBase:
     async def _update_feed_create_entries(self, feed_external_ids: set[str]) -> int:
         """Create entities after feed update."""
         create_external_ids = feed_external_ids.difference(self._managed_external_ids)
-        count_created = len(create_external_ids)
+        count_created: int = len(create_external_ids)
         await self._generate_new_entities(create_external_ids)
         return count_created
 
     async def _update_feed_update_entries(self, feed_external_ids: set[str]) -> int:
         """Update entities after feed update."""
         update_external_ids = self._managed_external_ids.intersection(feed_external_ids)
-        count_updated = len(update_external_ids)
+        count_updated: int = len(update_external_ids)
         await self._update_entities(update_external_ids)
         return count_updated
 
     async def _update_feed_remove_entries(self, feed_external_ids: set[str]) -> int:
         """Remove entities after feed update."""
         remove_external_ids = self._managed_external_ids.difference(feed_external_ids)
-        count_removed = len(remove_external_ids)
+        count_removed: int = len(remove_external_ids)
         await self._remove_entities(remove_external_ids)
         return count_removed
 
