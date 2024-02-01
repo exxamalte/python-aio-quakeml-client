@@ -1,5 +1,13 @@
 # Changes
 
+## 0.7 (02/02/2024)
+* Added Python 3.12 support.
+* Bumped dateparser to 1.2.0.
+* Bumped haversine to 2.8.1.
+* Bumped library versions: black, flake8, isort.
+* Migrated to pytest.
+* Code quality improvements.
+
 ## 0.6 (27/01/2023)
 * Added Python 3.11 support.
 * Removed deprecated asynctest dependency.
