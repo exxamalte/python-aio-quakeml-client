@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 
 import dateparser
 import xmltodict
 
-from aio_quakeml_client.consts import (
+from ..consts import (
     XML_TAG_CREATIONINFO,
     XML_TAG_CREATIONTIME,
     XML_TAG_DEPTH,
@@ -22,7 +23,7 @@ from aio_quakeml_client.consts import (
     XML_TAG_TIME,
     XML_TAG_VALUE,
 )
-from aio_quakeml_client.xml_parser.event_parameters import EventParameters
+from .event_parameters import EventParameters
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ DEFAULT_NAMESPACES = {
     "http://quakeml.org/xmlns/bed/1.2": None,
     "http://quakeml.org/xmlns/quakeml/1.2": "q",
 }
-KEYS_CHAINS_DATE = [
+KEYS_CHAINS_DATE: list[list[str]] = [
     [
         XML_TAG_Q_QUAKEML,
         XML_TAG_EVENTPARAMETERS,
@@ -47,7 +48,7 @@ KEYS_CHAINS_DATE = [
         XML_TAG_CREATIONTIME,
     ],
 ]
-KEYS_CHAINS_INT = [
+KEYS_CHAINS_INT: list[list[str]] = [
     [
         XML_TAG_Q_QUAKEML,
         XML_TAG_EVENTPARAMETERS,
@@ -64,7 +65,7 @@ KEYS_CHAINS_INT = [
         XML_TAG_STATIONCOUNT,
     ],
 ]
-KEY_CHAINS_FLOAT = [
+KEY_CHAINS_FLOAT: list[list[str]] = [
     [
         XML_TAG_Q_QUAKEML,
         XML_TAG_EVENTPARAMETERS,
@@ -97,12 +98,14 @@ class XmlParser:
 
     def __init__(self, additional_namespaces: dict = None):
         """Initialise the XML parser."""
-        self._namespaces = DEFAULT_NAMESPACES
+        self._namespaces: dict = DEFAULT_NAMESPACES
         if additional_namespaces:
             self._namespaces.update(additional_namespaces)
 
     @staticmethod
-    def postprocessor(path, key, value):
+    def postprocessor(
+        path: list[str], key: str, value: str
+    ) -> tuple[str, str | float | int | datetime]:
         """Conduct type conversion for selected keys."""
         try:
             if XmlParser._is_path_in(path, KEY_CHAINS_FLOAT):
@@ -119,10 +122,10 @@ class XmlParser:
         return key, value
 
     @staticmethod
-    def _is_path_in(path, chains):
+    def _is_path_in(path: list[str], chains: list[list[str]]) -> bool:
         """Test if the path is in any of the provided chains."""
         if path and chains:
-            new_path = []
+            new_path: list = []
             for element in path:
                 new_path.append(element[0])
             for chain in chains:
@@ -130,10 +133,10 @@ class XmlParser:
                     return True
         return False
 
-    def parse(self, xml) -> EventParameters | None:
+    def parse(self, xml: str) -> EventParameters | None:
         """Parse the provided xml."""
         if xml:
-            parsed_dict = xmltodict.parse(
+            parsed_dict: dict = xmltodict.parse(
                 xml,
                 process_namespaces=True,
                 namespaces=self._namespaces,
@@ -146,9 +149,9 @@ class XmlParser:
     @staticmethod
     def _create_feed_from_quakeml(parsed_dict: dict) -> EventParameters | None:
         """Create feed from provided RSS data."""
-        quakeml = parsed_dict.get(XML_TAG_Q_QUAKEML)
+        quakeml: dict = parsed_dict.get(XML_TAG_Q_QUAKEML)
         if XML_TAG_EVENTPARAMETERS in quakeml:
-            events = quakeml.get(XML_TAG_EVENTPARAMETERS)
+            events: dict = quakeml.get(XML_TAG_EVENTPARAMETERS)
             return EventParameters(events)
         else:
             _LOGGER.warning(

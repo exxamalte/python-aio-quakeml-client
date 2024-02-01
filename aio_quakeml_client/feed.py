@@ -34,12 +34,12 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         filter_minimum_magnitude: float = None,
     ):
         """Initialise this service."""
-        self._websession = websession
-        self._home_coordinates = home_coordinates
-        self._url = url
-        self._filter_radius = filter_radius
-        self._filter_minimum_magnitude = filter_minimum_magnitude
-        self._last_timestamp = None
+        self._websession: ClientSession = websession
+        self._home_coordinates: tuple[float, float] = home_coordinates
+        self._url: str | None = url
+        self._filter_radius: float | None = filter_radius
+        self._filter_minimum_magnitude: float | None = filter_minimum_magnitude
+        self._last_timestamp: datetime | None = None
 
     def __repr__(self):
         """Return string representation of this feed."""
@@ -74,14 +74,14 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         status, quakeml_data = await self._fetch()
         if status == UPDATE_OK:
             if quakeml_data:
-                entries = []
-                global_data = self._extract_from_feed(quakeml_data)
+                entries: list = []
+                global_data: dict | None = self._extract_from_feed(quakeml_data)
                 # Extract data from feed entries.
                 for event in quakeml_data.events:
                     entries.append(
                         self._new_entry(self._home_coordinates, event, global_data)
                     )
-                filtered_entries = self._filter_entries(entries)
+                filtered_entries: list[T_FEED_ENTRY] = self._filter_entries(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
             else:
@@ -95,7 +95,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
             self._last_timestamp = None
             return UPDATE_ERROR, None
 
-    def _fetch_url(self):
+    def _fetch_url(self) -> str | None:
         """Return URL to fetch QuakeML data from."""
         return self._url
 
@@ -153,7 +153,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _filter_entries(self, entries: list[T_FEED_ENTRY]) -> list[T_FEED_ENTRY]:
         """Filter the provided entries."""
-        filtered_entries = entries
+        filtered_entries: list[T_FEED_ENTRY] = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
         # Always remove entries without geometry.
         filtered_entries = list(
@@ -194,7 +194,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
     ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
-            dates = sorted(
+            dates: list[datetime] = sorted(
                 [
                     entry.creation_info.creation_time
                     for entry in feed_entries
@@ -203,7 +203,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                 reverse=True,
             )
             if dates:
-                last_timestamp = dates[0]
+                last_timestamp: datetime = dates[0]
                 _LOGGER.debug("Last timestamp: %s", last_timestamp)
                 return last_timestamp
         return None

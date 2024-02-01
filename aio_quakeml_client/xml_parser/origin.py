@@ -22,7 +22,7 @@ class Origin(Element):
     @property
     def latitude(self) -> float | None:
         """Return the hypocenter latitude."""
-        latitude = self.attribute([XML_TAG_LATITUDE])
+        latitude: dict | None = self.attribute([XML_TAG_LATITUDE])
         if latitude:
             return latitude.get(XML_TAG_VALUE)
         return None
@@ -30,7 +30,7 @@ class Origin(Element):
     @property
     def longitude(self) -> float | None:
         """Return the hypocenter longitude."""
-        longitude = self.attribute([XML_TAG_LONGITUDE])
+        longitude: dict | None = self.attribute([XML_TAG_LONGITUDE])
         if longitude:
             return longitude.get(XML_TAG_VALUE)
         return None
@@ -38,7 +38,7 @@ class Origin(Element):
     @property
     def depth(self) -> float | None:
         """Return depth of hypocenter with respect to the nominal sea level."""
-        depth = self.attribute([XML_TAG_DEPTH])
+        depth: dict | None = self.attribute([XML_TAG_DEPTH])
         if depth:
             return depth.get(XML_TAG_VALUE)
         return None
@@ -51,7 +51,7 @@ class Origin(Element):
     @property
     def time(self) -> datetime | None:
         """Return focal time."""
-        time = self.attribute([XML_TAG_TIME])
+        time: dict | None = self.attribute([XML_TAG_TIME])
         if time:
             return time.get(XML_TAG_VALUE)
         return None

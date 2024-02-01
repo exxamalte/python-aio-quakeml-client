@@ -19,14 +19,14 @@ class StatusUpdate:
         removed: int,
     ):
         """Initialise this status update."""
-        self._status = status
-        self._last_update = last_update
-        self._last_update_successful = last_update_successful
-        self._last_timestamp = last_timestamp
-        self._total = total
-        self._created = created
-        self._updated = updated
-        self._removed = removed
+        self._status: str = status
+        self._last_update: datetime | None = last_update
+        self._last_update_successful: datetime | None = last_update_successful
+        self._last_timestamp: datetime | None = last_timestamp
+        self._total: int = total
+        self._created: int = created
+        self._updated: int = updated
+        self._removed: int = removed
 
     def __repr__(self):
         """Return string representation of this entry."""

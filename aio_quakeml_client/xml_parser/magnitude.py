@@ -11,7 +11,7 @@ class Magnitude(Element):
     @property
     def mag(self) -> float | None:
         """Return magnitude value."""
-        time = self.attribute([XML_TAG_MAG])
+        time: dict | None = self.attribute([XML_TAG_MAG])
         if time:
             return time.get(XML_TAG_VALUE)
         return None

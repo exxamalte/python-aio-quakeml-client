@@ -21,8 +21,8 @@ class FeedEntry(ABC):
 
     def __init__(self, home_coordinates: tuple[float, float], quakeml_event: Event):
         """Initialise this feed entry."""
-        self._home_coordinates = home_coordinates
-        self._quakeml_event = quakeml_event
+        self._home_coordinates: tuple[float, float] = home_coordinates
+        self._quakeml_event: Event = quakeml_event
 
     def __repr__(self):
         """Return string representation of this entry."""
@@ -39,10 +39,10 @@ class FeedEntry(ABC):
     def external_id(self) -> str | None:
         """Return the external id of this entry."""
         if self._quakeml_event:
-            external_id = self._quakeml_event.public_id
+            external_id: str | None = self._quakeml_event.public_id
             if not external_id:
                 # Use geometry as ID as a fallback.
-                external_id = hash(self.coordinates)
+                external_id = str(hash(self.coordinates))
             return external_id
         return None
 
@@ -63,7 +63,7 @@ class FeedEntry(ABC):
     @property
     def distance_to_home(self) -> float:
         """Return the distance in km of this entry to the home coordinates."""
-        distance = float("inf")
+        distance: float = float("inf")
         if self.coordinates:
             # Expecting coordinates in format: (latitude, longitude).
             return haversine(self.coordinates, self._home_coordinates)
