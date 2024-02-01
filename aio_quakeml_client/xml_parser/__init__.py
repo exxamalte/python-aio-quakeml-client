@@ -7,7 +7,7 @@ from datetime import datetime
 import dateparser
 import xmltodict
 
-from aio_quakeml_client.consts import (
+from ..consts import (
     XML_TAG_CREATIONINFO,
     XML_TAG_CREATIONTIME,
     XML_TAG_DEPTH,
@@ -23,7 +23,7 @@ from aio_quakeml_client.consts import (
     XML_TAG_TIME,
     XML_TAG_VALUE,
 )
-from aio_quakeml_client.xml_parser.event_parameters import EventParameters
+from .event_parameters import EventParameters
 
 _LOGGER = logging.getLogger(__name__)
 
