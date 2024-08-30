@@ -86,6 +86,32 @@ async def test_update_ok(mock_aioresponse):
 
 
 @pytest.mark.asyncio
+async def test_update_ok_with_depth_float(mock_aioresponse):
+    """Test updating feed is ok."""
+    home_coordinates = (-31.0, 151.0)
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_5.xml"),
+    )
+
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
+        feed = MockQuakeMLFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockQuakeMLFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None, magnitude=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+        feed_entry = entries[0]
+        assert feed_entry is not None
+        assert feed_entry.origin.depth == 14500.25
+
+
+@pytest.mark.asyncio
 async def test_update_edge_cases(mock_aioresponse):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
