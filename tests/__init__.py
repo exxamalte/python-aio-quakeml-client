@@ -1,4 +1,5 @@
 """Tests for QuakeML library."""
+
 from typing import Dict, Optional, Tuple
 
 from aio_quakeml_client.feed import QuakeMLFeed

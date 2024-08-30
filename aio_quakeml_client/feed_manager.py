@@ -1,8 +1,9 @@
 """Base class for the feed manager. This allows managing feeds and their entries throughout their life-cycle."""
+
 from __future__ import annotations
 
-import logging
 from datetime import datetime
+import logging
 from typing import Awaitable, Callable
 
 from .consts import UPDATE_OK, UPDATE_OK_NO_DATA
@@ -19,10 +20,10 @@ class QuakeMLFeedManagerBase:
     def __init__(
         self,
         feed: QuakeMLFeed,
-        generate_async_callback: Callable[[str], Awaitable[None]] = None,
-        update_async_callback: Callable[[str], Awaitable[None]] = None,
-        remove_async_callback: Callable[[str], Awaitable[None]] = None,
-        status_async_callback: Callable[[StatusUpdate], Awaitable[None]] = None,
+        generate_async_callback: Callable[[str], Awaitable[None]] | None = None,
+        update_async_callback: Callable[[str], Awaitable[None]] | None = None,
+        remove_async_callback: Callable[[str], Awaitable[None]] | None = None,
+        status_async_callback: Callable[[StatusUpdate], Awaitable[None]] | None = None,
     ):
         """Initialise feed manager."""
         self._feed: QuakeMLFeed = feed
@@ -30,18 +31,18 @@ class QuakeMLFeedManagerBase:
         self._managed_external_ids: set = set()
         self._last_update: datetime | None = None
         self._last_update_successful: datetime | None = None
-        self._generate_async_callback: Callable[
-            [str], Awaitable[None]
-        ] = generate_async_callback
-        self._update_async_callback: Callable[
-            [str], Awaitable[None]
-        ] = update_async_callback
-        self._remove_async_callback: Callable[
-            [str], Awaitable[None]
-        ] = remove_async_callback
-        self._status_async_callback: Callable[
-            [StatusUpdate], Awaitable[None]
-        ] = status_async_callback
+        self._generate_async_callback: Callable[[str], Awaitable[None]] = (
+            generate_async_callback
+        )
+        self._update_async_callback: Callable[[str], Awaitable[None]] = (
+            update_async_callback
+        )
+        self._remove_async_callback: Callable[[str], Awaitable[None]] = (
+            remove_async_callback
+        )
+        self._status_async_callback: Callable[[StatusUpdate], Awaitable[None]] = (
+            status_async_callback
+        )
 
     def __repr__(self):
         """Return string representation of this feed."""

@@ -1,4 +1,5 @@
 """Description."""
+
 from __future__ import annotations
 
 from ..consts import XML_TAG_TEXT

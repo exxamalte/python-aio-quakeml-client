@@ -1,4 +1,5 @@
 """Constants for feeds and feed entries."""
+
 from typing import Final
 
 ATTR_ATTRIBUTION: Final = "attribution"

@@ -1,4 +1,5 @@
 """Event Parameters."""
+
 from __future__ import annotations
 
 import logging
@@ -19,8 +20,7 @@ class EventParameters(Element):
         items: dict | None = self.attribute([XML_TAG_EVENT])
         entries: list = []
         if items and isinstance(items, list):
-            for item in items:
-                entries.append(Event(item))
+            entries = [Event(item) for item in items]
         else:
             # A single item in the feed is not represented as an array.
             entries.append(Event(items))

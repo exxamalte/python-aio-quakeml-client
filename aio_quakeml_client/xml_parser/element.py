@@ -1,4 +1,5 @@
 """Base class for any QuakeML elements."""
+
 from __future__ import annotations
 
 import logging
@@ -43,6 +44,7 @@ class Element:
         key: str = keys.pop(0)
         if key in obj:
             return Element.attribute_in_structure(obj[key], keys) if keys else obj[key]
+        return ""
 
     @property
     def public_id(self) -> str | None:
