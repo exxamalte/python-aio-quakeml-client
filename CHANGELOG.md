@@ -1,5 +1,10 @@
 # Changes
 
+## 0.8 (30/08/2024)
+* Changed depth from integer to float (thanks @FoxxMD).
+* Removed Python 3.8 support.
+* Code quality improvements.
+
 ## 0.7 (02/02/2024)
 * Added Python 3.12 support.
 * Bumped dateparser to 1.2.0.
