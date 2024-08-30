@@ -1,8 +1,9 @@
 """XML Parser."""
+
 from __future__ import annotations
 
-import logging
 from datetime import datetime
+import logging
 
 import dateparser
 import xmltodict
@@ -96,7 +97,7 @@ KEY_CHAINS_FLOAT: list[list[str]] = [
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces: dict = None):
+    def __init__(self, additional_namespaces: dict | None = None):
         """Initialise the XML parser."""
         self._namespaces: dict = DEFAULT_NAMESPACES
         if additional_namespaces:
@@ -125,9 +126,7 @@ class XmlParser:
     def _is_path_in(path: list[str], chains: list[list[str]]) -> bool:
         """Test if the path is in any of the provided chains."""
         if path and chains:
-            new_path: list = []
-            for element in path:
-                new_path.append(element[0])
+            new_path: list = [element[0] for element in path]
             for chain in chains:
                 if chain == new_path:
                     return True
@@ -153,8 +152,7 @@ class XmlParser:
         if XML_TAG_EVENTPARAMETERS in quakeml:
             events: dict = quakeml.get(XML_TAG_EVENTPARAMETERS)
             return EventParameters(events)
-        else:
-            _LOGGER.warning(
-                "Invalid structure: Missing top level element %s", XML_TAG_Q_QUAKEML
-            )
-            return None
+        _LOGGER.warning(
+            "Invalid structure: Missing top level element %s", XML_TAG_Q_QUAKEML
+        )
+        return None

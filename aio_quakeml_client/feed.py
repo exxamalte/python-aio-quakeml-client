@@ -1,16 +1,17 @@
 """QuakeML Feed."""
+
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 import asyncio
 import codecs
-import logging
-from abc import ABC, abstractmethod
 from datetime import datetime
+import logging
+from pyexpat import ExpatError
 from typing import Generic, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
-from pyexpat import ExpatError
 
 from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed_entry import FeedEntry
@@ -29,9 +30,9 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         self,
         websession: ClientSession,
         home_coordinates: tuple[float, float],
-        url: str = None,
-        filter_radius: float = None,
-        filter_minimum_magnitude: float = None,
+        url: str | None = None,
+        filter_radius: float | None = None,
+        filter_minimum_magnitude: float | None = None,
     ):
         """Initialise this service."""
         self._websession: ClientSession = websession
@@ -43,13 +44,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(home={}, url={}, radius={}, magnitude={})>".format(
-            self.__class__.__name__,
-            self._home_coordinates,
-            self._fetch_url(),
-            self._filter_radius,
-            self._filter_minimum_magnitude,
-        )
+        return f"<{self.__class__.__name__}(home={self._home_coordinates}, url={self._fetch_url()}, radius={self._filter_radius}, magnitude={self._filter_minimum_magnitude})>"
 
     @abstractmethod
     def _new_entry(
@@ -59,7 +54,6 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
         global_data: dict | None,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
-        pass
 
     def _client_session_timeout(self) -> int:
         """Define client session timeout in seconds. Override if necessary."""
@@ -67,33 +61,29 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _additional_namespaces(self) -> dict | None:
         """Provide additional namespaces, relevant for this feed."""
-        pass
 
     async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, quakeml_data = await self._fetch()
         if status == UPDATE_OK:
             if quakeml_data:
-                entries: list = []
                 global_data: dict | None = self._extract_from_feed(quakeml_data)
                 # Extract data from feed entries.
-                for event in quakeml_data.events:
-                    entries.append(
-                        self._new_entry(self._home_coordinates, event, global_data)
-                    )
+                entries: list = [
+                    self._new_entry(self._home_coordinates, event, global_data)
+                    for event in quakeml_data.events
+                ]
                 filtered_entries: list[T_FEED_ENTRY] = self._filter_entries(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
-            else:
-                # Should not happen.
-                return UPDATE_OK, None
-        elif status == UPDATE_OK_NO_DATA:
+            # Should not happen.
+            return UPDATE_OK, None
+        if status == UPDATE_OK_NO_DATA:
             # Happens for example if the server returns 304
             return UPDATE_OK_NO_DATA, None
-        else:
-            # Error happened while fetching the feed.
-            self._last_timestamp = None
-            return UPDATE_ERROR, None
+        # Error happened while fetching the feed.
+        self._last_timestamp = None
+        return UPDATE_ERROR, None
 
     def _fetch_url(self) -> str | None:
         """Return URL to fetch QuakeML data from."""
@@ -118,8 +108,7 @@ class QuakeMLFeed(Generic[T_FEED_ENTRY], ABC):
                         self.parser = parser
                         self.feed_data = feed_data
                         return UPDATE_OK, feed_data
-                    else:
-                        return UPDATE_OK_NO_DATA, None
+                    return UPDATE_OK_NO_DATA, None
                 except client_exceptions.ClientError as client_error:
                     _LOGGER.warning(
                         "Fetching data from %s failed with %s", url, client_error

@@ -22,6 +22,7 @@ select = [
     "E", # pycodestyle
     "F", # pyflakes/autoflake
     "FLY", # flynt
+    "FURB", # refurb
     "G", # flake8-logging-format
     "I", # isort
     "INP", # flake8-no-pep420
@@ -82,7 +83,9 @@ ignore = [
     "D406", # Section name should end with a newline
     "D407", # Section name underlining
     "E501", # line too long
+    "PLR0913", # Too many arguments to function call ({c_args} > {max_args})
     "TRY003", # Avoid specifying long messages outside the exception class
+    "TRY300", # Consider moving this statement to an `else` block
     "TRY400", # Use `logging.exception` instead of `logging.error`
     # Ignored due to performance: https://github.com/charliermarsh/ruff/issues/2923
     "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`

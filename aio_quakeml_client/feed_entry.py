@@ -1,9 +1,10 @@
 """Feed Entry."""
+
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 import logging
 import re
-from abc import ABC, abstractmethod
 
 from haversine import haversine
 
@@ -82,8 +83,7 @@ class FeedEntry(ABC):
         if self._quakeml_event and self._quakeml_event.description:
             if self._quakeml_event.description.type:
                 return f"{self._quakeml_event.description.type.capitalize()}: {self._quakeml_event.description.text}"
-            else:
-                return self._quakeml_event.description.text
+            return self._quakeml_event.description.text
         return None
 
     @property

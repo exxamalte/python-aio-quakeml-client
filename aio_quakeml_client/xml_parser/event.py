@@ -1,4 +1,5 @@
 """Event."""
+
 from __future__ import annotations
 
 import logging
@@ -43,8 +44,7 @@ class Event(Element):
         entries: list = []
         if origins:
             if isinstance(origins, list):
-                for origin in origins:
-                    entries.append(Origin(origin))
+                entries = [Origin(origin) for origin in origins]
             else:
                 entries.append(Origin(origins))
         return entries
@@ -63,8 +63,7 @@ class Event(Element):
         entries: list = []
         if magnitudes:
             if isinstance(magnitudes, list):
-                for magnitude in magnitudes:
-                    entries.append(Magnitude(magnitude))
+                entries = [Magnitude(magnitude) for magnitude in magnitudes]
             else:
                 entries.append(Magnitude(magnitudes))
         return entries

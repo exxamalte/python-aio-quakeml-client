@@ -1,4 +1,5 @@
 """Creation info."""
+
 from __future__ import annotations
 
 from ..consts import XML_TAG_AGENCYID, XML_TAG_AUTHOR, XML_TAG_CREATIONTIME
