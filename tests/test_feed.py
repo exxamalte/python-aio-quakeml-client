@@ -1,12 +1,13 @@
 """Test for the generic QuakeML feed."""
+
 import asyncio
 import datetime
 from http import HTTPStatus
 from unittest.mock import MagicMock
 
 import aiohttp
-import pytest
 from aiohttp import ClientOSError
+import pytest
 
 from aio_quakeml_client.consts import UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from tests import MockConfigurabelUrlQuakeMLFeed, MockQuakeMLFeed

@@ -1,4 +1,5 @@
 """Tests for QuakeML feed general setup."""
+
 from aio_quakeml_client import __version__
 
 

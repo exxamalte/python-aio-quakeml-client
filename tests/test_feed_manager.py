@@ -1,4 +1,5 @@
 """Test for the generic QuakeML feed manager."""
+
 import asyncio
 from http import HTTPStatus
 
