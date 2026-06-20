@@ -1,3 +1,56 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aio_quakeml_client"
+version  = "0.8"
+requires-python = ">= 3.11"
+authors = [
+  {name = "Malte Franken", email = "coding@subspace.de"},
+]
+description = "An async QuakeML client library."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["homeassistant", "quakeml"]
+classifiers = [
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+    "aiohttp>=3.7.4,<4",
+    "haversine>=2.9.0",
+    "xmltodict>=1.0.4",
+    "dateparser>=1.4.1",
+]
+
+[project.optional-dependencies]
+tests = [
+    "pytest-asyncio",
+    "pytest-timeout",
+    "pytest-xdist",
+    "pytest-cov",
+    "pytest-cov",
+    "mock",
+    "aiointercept",
+]
+
+[project.urls]
+Repository = "https://github.com/exxamalte/python-aio-quakeml-client"
+Issues = "https://github.com/exxamalte/python-aio-quakeml-client/issues"
+Changelog = "https://github.com/exxamalte/python-aio-quakeml-client/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["aio_quakeml_client*"]
+
 [tool.ruff.lint]
 select = [
     "A001", # Variable {name} is shadowing a Python builtin
