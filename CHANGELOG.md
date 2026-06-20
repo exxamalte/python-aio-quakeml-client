@@ -1,5 +1,14 @@
 # Changes
 
+## 2026.6.0 (20/06/2026)
+* Added Python 3.13 and 3.14 support.
+* Removed Python 3.9 and 3.10 support.
+* Bumped haversine to 2.9.0.
+* Bumped xmldict to 1.0.4.
+* Bumped dateparser to 1.4.1.
+* Code quality improvements.
+* Changing to date-based versioning
+
 ## 0.8 (30/08/2024)
 * Changed depth from integer to float (thanks @FoxxMD).
 * Removed Python 3.8 support.
