@@ -12,10 +12,10 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_feed_manager(mock_aioresponse):
+async def test_feed_manager(mock_aiointercept):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.xml"),
@@ -82,7 +82,7 @@ async def test_feed_manager(mock_aioresponse):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.OK,
             body=load_fixture("generic_feed_4.xml"),
@@ -111,7 +111,7 @@ async def test_feed_manager(mock_aioresponse):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.OK,
         )
@@ -129,7 +129,7 @@ async def test_feed_manager(mock_aioresponse):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
@@ -149,10 +149,10 @@ async def test_feed_manager(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_feed_manager_with_status_callback(mock_aioresponse):
+async def test_feed_manager_with_status_callback(mock_aiointercept):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.xml"),
@@ -223,7 +223,7 @@ async def test_feed_manager_with_status_callback(mock_aioresponse):
         removed_entity_external_ids.clear()
         status_update.clear()
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )

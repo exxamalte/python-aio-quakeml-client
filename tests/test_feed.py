@@ -15,10 +15,10 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_update_ok(mock_aioresponse):
+async def test_update_ok(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -86,10 +86,10 @@ async def test_update_ok(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_depth_float(mock_aioresponse):
+async def test_update_ok_with_depth_float(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_5.xml"),
@@ -112,10 +112,10 @@ async def test_update_ok_with_depth_float(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_edge_cases(mock_aioresponse):
+async def test_update_edge_cases(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_2.xml"),
@@ -162,10 +162,10 @@ async def test_update_edge_cases(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_filter(mock_aioresponse):
+async def test_update_ok_with_radius_filter(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (42.0, 13.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.xml"),
@@ -192,10 +192,10 @@ async def test_update_ok_with_radius_filter(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_magnitude_filter(mock_aioresponse):
+async def test_update_ok_with_magnitude_filter(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (42.0, 13.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.xml"),
@@ -222,10 +222,10 @@ async def test_update_ok_with_magnitude_filter(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_with_configurable_url(mock_aioresponse):
+async def test_update_with_configurable_url(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/customtestpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -283,10 +283,10 @@ async def test_update_with_timeout_error():
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(mock_aioresponse):
+async def test_update_with_request_exception(mock_aiointercept):
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/badpath",
         status=HTTPStatus.NOT_FOUND,
     )
@@ -299,10 +299,10 @@ async def test_update_with_request_exception(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_with_xml_decode_error(mock_aioresponse):
+async def test_update_with_xml_decode_error(mock_aiointercept):
     """Test updating feed raises exception."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/badxml",
         status=HTTPStatus.OK,
         body="NOT XML",
@@ -316,7 +316,7 @@ async def test_update_with_xml_decode_error(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_bom(mock_aioresponse):
+async def test_update_bom(mock_aiointercept):
     """Test updating feed with BOM (byte order mark) is ok."""
     home_coordinates = (-31.0, 151.0)
     xml = (
@@ -327,7 +327,7 @@ async def test_update_bom(mock_aioresponse):
         "<latitude><value>42.5218</value></latitude><longitude><value>42.5218</value>"
         "</longitude></origin></event></eventParameters></q:quakeml>"
     )
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=xml.encode("iso-8859-1"),
@@ -347,13 +347,13 @@ async def test_update_bom(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_not_xml(mock_aioresponse):
+async def test_update_not_xml(mock_aiointercept):
     """Test updating feed where returned payload is not XML."""
     # If a server returns invalid payload (00 control characters) this results in an
     # exception thrown: ExpatError: not well-formed (invalid token): line 1, column 0
     home_coordinates = (-31.0, 151.0)
     not_xml = "\x00\x00\x00"
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=not_xml,
